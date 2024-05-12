@@ -4,7 +4,6 @@
 
 <template>
   <div>
-    <h1>Visitor</h1>
   </div>
 </template>
 

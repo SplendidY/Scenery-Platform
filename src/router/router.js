@@ -1,7 +1,7 @@
 import {createRouter,createWebHashHistory} from 'vue-router'
 
 import Loginregist from '../components/Loginregist.vue'
-import Visitor from '../components/Visitor.vue'
+import Service from '../components/Service.vue'
 
 let router = createRouter({
     history:createWebHashHistory(),
@@ -19,8 +19,8 @@ let router = createRouter({
             component:Loginregist
         },
         {
-            path:"/visitor",
-            component:Visitor
+            path:"/service",
+            component:Service
         }
     ]
 })

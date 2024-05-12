@@ -1,83 +1,113 @@
-<script setup>
-    import{ ref } from 'vue'
-
-    const isRightPanelActive = ref(false);
-    const signUpUser = ref('');
-    const signUpEmail = ref('');
-    const signUpPassword = ref('');
-    const signInEmail = ref('');
-    const signInPassword = ref('');
-
-    const toggleSignIn = () => {
-    isRightPanelActive.value = false;
-    };
-
-    const toggleSignUp = () => {
-    isRightPanelActive.value = true;
-    };
-
-    const handleSubmitSignUp = () => {
-    // 处理注册表单提交
-    };
-
-    const handleSubmitSignIn = () => {
-    // 处理登录表单提交
-    };
-</script>
-
 <template>
-    <div class="container" :class="{ 'right-panel-active': isRightPanelActive }">
-    <!-- Sign Up -->
-    <div class="container__form container--signup">
-      <form class="form" @submit.prevent="handleSubmitSignUp">
-        <h2 class="form__title">Sign Up</h2>
-        <input type="text" v-model="signUpUser" placeholder="User" class="input" />
-        <input type="password" v-model="signUpPassword" placeholder="Password" class="input" />
-        <button type="submit" class="btn">Sign Up</button>
-      </form>
-    </div>
+  <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" >
+    
+  <div class="container__form container--signup">
+    <form class="form" @submit.prevent="handleSubmitSignUp">  
+      <h2 class="form__title">Sign Up</h2>
+      <input type="text" v-model="signUpUser" placeholder="User(3-12characters)" class="input" @blur="checkUsername()"/>
+      <span :class="{ 'error-text': !isUsernameValid }">{{ usernameMsg }}</span>
+      <input type="password" v-model="signUpPassword" placeholder="Password(less than 20 characters)" class="input" @blur="checkUserPwd()"/>
+      <span :class="{ 'error-text': !isPasswordValid }">{{ userPwdMsg }}</span>
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+  </div>
 
-    <!-- Sign In -->
-    <div class="container__form container--signin">
-      <form class="form" @submit.prevent="handleSubmitSignIn">
-        <h2 class="form__title">Sign In</h2>
-        <input type="text" v-model="signInUser" placeholder="User" class="input" />
-        <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
-        <a href="#" class="link">Forgot your password?</a>
-        <button type="submit" class="btn">Sign In</button>
-      </form>
-    </div>
+  <div class="container__form container--signin">
+    <form class="form" @submit.prevent="handleSubmitSignIn">
+      <h2 class="form__title">Sign In</h2>
+      <input type="text" v-model="signInUser" placeholder="User" class="input" />
+      <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
+      <a href="#" class="link">Forgot your password?</a>
+      <button type="submit" class="btn">Sign In</button>
+    </form>
+  </div>
 
-    <!-- Overlay -->
-    <div class="container__overlay">
-      <div class="overlay">
-        <div class="overlay__panel overlay--left">
-        <router-link to="/login">
-          <button class="btn" @click="toggleSignIn">Sign In</button>
-        </router-link>
-        </div>
-        <div class="overlay__panel overlay--right">
-        <router-link to="/regist">
-          <button class="btn" @click="toggleSignUp">Sign Up</button>
-        </router-link>
-        </div>
+  <!-- Overlay -->
+  <div class="container__overlay">
+    <div class="overlay">
+      <div class="overlay__panel overlay--left">
+      <router-link to="/login">
+        <button class="btn" @click="toggleSignIn">Sign In</button>
+      </router-link>
+      </div>
+      <div class="overlay__panel overlay--right">
+      <router-link to="/regist">
+        <button class="btn" @click="toggleSignUp">Sign Up</button>
+      </router-link>
       </div>
     </div>
   </div>
+</div>
 </template>
 
+<script setup>
+import { ref } from 'vue'
+
+let isRightPanelActive = ref(false);
+let signUpUser = ref('');
+let signUpPassword = ref('');
+let signInPassword = ref('');
+let signInUser = ref('');
+
+const toggleSignIn = () => {
+  isRightPanelActive.value = false;
+};
+
+const toggleSignUp = () => {
+  isRightPanelActive.value = true;
+};
+
+const handleSubmitSignUp = () => {
+  // 处理注册表单提交
+};
+
+const handleSubmitSignIn = () => {
+  // 处理登录表单提交
+};
+
+let isUsernameValid = ref(true);
+let isPasswordValid = ref(true);
+let usernameMsg = ref('');
+let userPwdMsg = ref('');
+
+function checkUsername() {
+  let usernameReg = /^[a-zA-Z0-9]{3,12}$/
+  if (!usernameReg.test(signUpUser.value)) {
+      isUsernameValid.value = false;
+      usernameMsg.value = "illegal"
+      return false
+  }
+  isUsernameValid.value = true;
+  usernameMsg.value = "OK"
+  return true
+}
+
+function checkUserPwd() {
+  let passwordReg = /^[a-zA-Z0-9]{20}$/
+  if (!passwordReg.test(signUpPassword.value)) {
+      isPasswordValid.value = false;
+      userPwdMsg.value = "illegal"
+      return false
+  }
+  isPasswordValid.value = true;
+  userPwdMsg.value = "OK"
+  return true
+}
+// import {isRightPanelActive,signUpUser,signUpPassword,signInPassword,signInUser,toggleSignIn,toggleSignUp} from '../jses/Loginregist.js'
+</script>
+
 <style scoped>
-/* Scoped styles */
 .container {
-  background-color: white;
   border-radius: 0.7rem;
   box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25), 0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
-  height: 420px; /* Fixed height here */
-  max-width: 758px; /* Fixed width here */
+  height: 420px;
+  max-width: 760px;
   overflow: hidden;
   position: relative;
   width: 100%;
-  margin: 0 auto; /* Center the container horizontally */
+  margin-top: 140px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .container__form {
@@ -212,8 +242,8 @@
 }
 
 .input {
-  background-color: #ffffff; /* White background */
-  border: 1px solid #008997; /* Add a border */
+  background-color: #ffffff;
+  border: 1px solid #008997;
   padding: 0.9rem 0.9rem;
   margin: 0.5rem 0;
   width: 100%;
@@ -225,7 +255,7 @@
   color: #008997;
 }
 
-h2 {
+h2,span {
   color: #008997;
 }
 
@@ -233,4 +263,9 @@ h2 {
   color: #008997;
   text-decoration:none;
 }
+
+.error-text {
+  color: red;
+}
+
 </style>

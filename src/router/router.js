@@ -1,31 +1,27 @@
 import {createRouter,createWebHashHistory} from 'vue-router'
 
-
-import Login from '../components/Login.vue'
-import Regist from '../components/Regist.vue'
-import aaa from '../components/aaa.vue'
+import Loginregist from '../components/Loginregist.vue'
+import Visitor from '../components/Visitor.vue'
 
 let router = createRouter({
     history:createWebHashHistory(),
     routes:[
         {
             path:"/",
-            component:Login
+            component:Loginregist
         },
         {
             path:"/login",
-            component:Login
-        },
-        {
-            path:"/aaa",
-            component:aaa
+            component:Loginregist
         },
         {
             path:"/regist",
-            component:Regist
+            component:Loginregist
+        },
+        {
+            path:"/visitor",
+            component:Visitor
         }
-
-
     ]
 })
 

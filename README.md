@@ -15,7 +15,7 @@ git commit -m "xxx"
 git push  
 git checkout master  
 git pull origin master（这步是为了防止你在修改代码的时候别人也修改并提交了，获取最新的master）  
-git merge test  (i)
+git merge test  (合并) (i)  
 git push origin master  
 就好了  
 上述方法很可能有什么不对的地方 比如合并冲突什么的 大家去看看（我搞不太懂了要

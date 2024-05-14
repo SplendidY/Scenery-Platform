@@ -7,6 +7,7 @@ github分支使用：
 git init  再cd project1
 git checkout -b test  
 git checkout test  
+git fetch  
 git branch --set-upstream-to=origin/test(这步建立了连接）  
 然后可以开始修改了  随便改一下代码  
 git add .  

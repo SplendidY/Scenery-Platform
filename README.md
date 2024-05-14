@@ -18,6 +18,7 @@ git pull origin master（这步是为了防止你在修改代码的时候别人�
 git merge test  
 git push origin master  
 就好了  
+上述方法很可能有什么不对的地方 比如合并冲突什么的 大家去看看（我搞不太懂了要
 注意git checkout master这步以及以后的几步 要确认你的代码基本无误之后 再进行  
 下载方式：  
 先用vscode打开一个空文件夹  

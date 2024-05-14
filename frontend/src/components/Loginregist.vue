@@ -1,4 +1,9 @@
 <template>
+  <div>
+  <div class="header-container">
+    <Header></Header>
+    </div>
+  <div class="background-container">
   <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" >
     
   <div class="container__form container--signup">
@@ -6,9 +11,9 @@
       <h2 class="form__title">Sign Up</h2>
       <input type="text" v-model="signUpUser" placeholder="User(3-12characters)" class="input" @blur="checkUsername()"/>
       <span :class="{ 'error-text': !isUsernameValid }">{{ usernameMsg }}</span>
-      <input type="password" v-model="signUpPassword" placeholder="Password(less than 20 characters)" class="input" @blur="checkUserPwd()"/>
+      <input type="password" v-model="signUpPassword" placeholder="Password(6-20characters)" class="input" @blur="checkUserPwd()"/>
       <span :class="{ 'error-text': !isPasswordValid }">{{ userPwdMsg }}</span>
-      <button type="submit" class="btn">Sign Up</button>
+      <button type="submit" class="btn" >Sign Up</button>
     </form>
   </div>
 
@@ -17,8 +22,10 @@
       <h2 class="form__title">Sign In</h2>
       <input type="text" v-model="signInUser" placeholder="User" class="input" />
       <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
-      <a href="#" class="link">Forgot your password?</a>
-      <button type="submit" class="btn">Sign In</button>
+      <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">Forgot your password?</a>
+      <router-link :to="true === true ? '/service' : '#'">      
+        <button type="submit" class="btn" id="inbtn">Sign In</button>
+    </router-link>
     </form>
   </div>
 
@@ -27,7 +34,7 @@
     <div class="overlay">
       <div class="overlay__panel overlay--left">
       <router-link to="/login">
-        <button class="btn" @click="toggleSignIn">Sign In</button>
+        <button class="btn" @click="toggleSignIn" id="changein">Sign In</button>
       </router-link>
       </div>
       <div class="overlay__panel overlay--right">
@@ -38,10 +45,13 @@
     </div>
   </div>
 </div>
+</div>
+</div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import Header from './Header.vue'
 
 let isRightPanelActive = ref(false);
 let signUpUser = ref('');
@@ -58,20 +68,23 @@ const toggleSignUp = () => {
 };
 
 const handleSubmitSignUp = () => {
-  // 处理注册表单提交
+  if((isUsernameValid.value==true)&&(isPasswordValid.value==true))
+  console.log("aaa")
+  // 加上后端的注册
 };
 
 const handleSubmitSignIn = () => {
-  // 处理登录表单提交
+  // if(账号密码正确)
+  // 加上后端的登录
 };
 
-let isUsernameValid = ref(true);
-let isPasswordValid = ref(true);
+let isUsernameValid = ref(false);
+let isPasswordValid = ref(false);
 let usernameMsg = ref('');
 let userPwdMsg = ref('');
 
 function checkUsername() {
-  let usernameReg = /^[a-zA-Z0-9]{3,12}$/
+  let usernameReg = /^.{3,12}$/
   if (!usernameReg.test(signUpUser.value)) {
       isUsernameValid.value = false;
       usernameMsg.value = "illegal"
@@ -83,7 +96,7 @@ function checkUsername() {
 }
 
 function checkUserPwd() {
-  let passwordReg = /^[a-zA-Z0-9]{20}$/
+  let passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+.,/;'']{6,20}$/
   if (!passwordReg.test(signUpPassword.value)) {
       isPasswordValid.value = false;
       userPwdMsg.value = "illegal"
@@ -114,7 +127,7 @@ function checkUserPwd() {
   height: 100%;
   position: absolute;
   top: 0;
-  transition: all 0.6s ease-in-out;
+  transition: all 0.8s ease-in-out;
 }
 
 .container--signin {
@@ -124,7 +137,10 @@ function checkUserPwd() {
 }
 
 .container.right-panel-active .container--signin {
+  animation: show 0.8s;
+  opacity: 1;
   transform: translateX(-100%);
+  z-index: 5;
 }
 
 .container--signup {
@@ -135,7 +151,7 @@ function checkUserPwd() {
 }
 
 .container.right-panel-active .container--signup {
-  animation: show 0.6s;
+  animation: show 0.8s;
   opacity: 1;
   transform: translateX(100%);
   z-index: 5;
@@ -147,7 +163,7 @@ function checkUserPwd() {
   overflow: hidden;
   position: absolute;
   top: 0;
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.8s ease-in-out;
   width: 50%;
   z-index: 100;
 }
@@ -165,7 +181,7 @@ function checkUserPwd() {
   left: -100%;
   position: relative;
   transform: translateX(0);
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.8s ease-in-out;
   width: 200%;
 }
 
@@ -183,12 +199,12 @@ function checkUserPwd() {
   text-align: center;
   top: 0;
   transform: translateX(0);
-  transition: transform 0.6s ease-in-out;
+  transition: transform 0.8s ease-in-out;
   width: 50%;
 }
 
 .overlay--left {
-  transform: translateX(-20%);
+  transform: translateX(-30%);
 }
 
 .container.right-panel-active .overlay--left {
@@ -201,7 +217,7 @@ function checkUserPwd() {
 }
 
 .container.right-panel-active .overlay--right {
-  transform: translateX(20%);
+  transform: translateX(30%);
 }
 
 .btn {
@@ -267,5 +283,41 @@ h2,span {
 .error-text {
   color: red;
 }
+
+#inbtn {
+  position:relative;
+  margin-top: 8px;
+}
+
+#changein{
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.header-container{
+  background-image: url('../assets/1.jpg');
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100px;
+  z-index: -1;
+}
+
+
+.background-container {
+  background-image: url('../assets/2.jpg');
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+ }
 
 </style>

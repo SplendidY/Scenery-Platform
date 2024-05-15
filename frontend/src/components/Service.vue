@@ -1,7 +1,13 @@
 <template>
   <el-container style="height: 98.34vh;">
 
-    <el-header style="background-color: #008997; color: #fff; text-align: center; line-height: 60px;">Service Header</el-header>
+    <el-header style="background-color: #008997; color: #fff; text-align: center; display: flex;align-items: center;">
+      <!-- <img src="nimenxuan" height="20px" width="20px"/> -->
+      <p>Service Header</p>
+      <el-button type='primary' style="margin-left: auto;">
+        log out
+      </el-button>
+    </el-header>
 
     <el-container>
       <el-aside width="200px" style="background-color: #008997;">

@@ -1,0 +1,20 @@
+/* 引入 Element Plus 的样式 */
+@import "~element-plus/theme-chalk/src/index";
+
+/* 自定义 el-input 样式 */
+.el-input {
+  .el-input__inner {
+    background-color: #ffffff;
+    border: 1px solid #008997;
+    padding: 0.9rem 0.9rem;
+    margin: 0.5rem 0;
+    width: 100%;
+    text-align: left;
+    color: #008997; /* 设置输入框内文字颜色 */
+  }
+  
+  .el-input__prefix,
+  .el-input__suffix {
+    color: #008997; /* 设置前缀和后缀图标颜色 */
+  }
+}

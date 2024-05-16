@@ -1,0 +1,27 @@
+1.定位到当前文件夹
+cd D:/GIS
+2.创建本地仓库
+git init project1
+3.移动到本地仓库
+cd project1
+4.添加远程连接
+git remote add origin https://github.com/SplendidY/project1.git
+5.如果显示remote origin already exists，可以更新连接
+git remote set-url origin https://github.com/SplendidY/project1.git
+6.也可以创建新连接，注意在之后push和pull时要用创建的新连接名new-origin，而不是origin
+git remote add new-origin https://github.com/SplendidY/project1.git
+7.查看远程连接
+git remote -v
+8.将远程的master分支下载到本地
+git pull origin master
+9.在本地创建新分支
+git checkout -b ZhuXianyun
+10.查看此时所处的分支
+git branch
+11.如果没有任何输出结果，输入以下两条指令
+git add .
+git commit -m "aa"
+12.将本地分支推送到远程分支，冒号前为本地分支名，冒号后为远程分支名
+git push origin ZhuXianyun:ZhuXianyun
+13.查看远程分支
+git branch -r

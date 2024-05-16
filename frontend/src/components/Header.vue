@@ -10,12 +10,13 @@
 
 <style scoped>
 .ht{
-      font-size: 35px;
-      margin:30px auto;
-      font-weight:400;
-      text-align: center;
-      animation:bounce 2s infinite;
-      /* color:; */
+    font-size: 40px;
+    margin:30px auto;
+    font-weight:400;
+    text-align: center;
+    animation:bounce 2s infinite;
+    color:white;
+    font-family: Lucida Sans Unicode,Verdana;
   }
   @keyframes bounce{
       0%,100%,20%,50%,80%{

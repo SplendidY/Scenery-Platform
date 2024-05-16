@@ -50,7 +50,7 @@
           <Cesium />
         </div>
       </el-main>
-      <el-footer style="padding: 0; width: 100%; flex-shrink: 0;">
+      <el-footer style="padding: 0; width: 100%;">
         <el-menu
           active-text-color="#ffd04b"
           background-color="#545c64"

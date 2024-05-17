@@ -21,7 +21,7 @@
       <input type="text" v-model="signInUser" placeholder="User" class="input" />
       <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
       <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">Forgot your password?</a>
-      <router-link :to="true === true ? '/service' : '#'">      
+      <router-link to="/service">      
         <button type="submit" class="btn" id="inbtn">Sign In</button>
     </router-link>
     </form>

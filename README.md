@@ -13,6 +13,7 @@ git branch --set-upstream-to=origin/test(这步建立了连接）
 git add .  
 git commit -m "xxx"  
 git push  
+到这步你已经将修改上传到你的分支里了 下面是上传到master分支的步骤  
 git checkout master  
 git pull origin master（这步是为了防止你在修改代码的时候别人也修改并提交了，获取最新的master）  
 git merge test  (合并) (i)  

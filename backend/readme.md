@@ -3,6 +3,7 @@
 使用requirements.txt文件来管理项目的依赖
 
 0.创建并使用自己的环境（注：环境管理方法可以自己定，只要requirement.txt一样就可以了）
+这边建议在anaconda cmd里面输入 powershell里面有时候用不了
 
 ```bash
 cd backend

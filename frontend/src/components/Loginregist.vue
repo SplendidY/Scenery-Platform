@@ -65,15 +65,54 @@ const toggleSignUp = () => {
   isRightPanelActive.value = true;
 };
 
-const handleSubmitSignUp = () => {
-  if((isUsernameValid.value==true)&&(isPasswordValid.value==true))
-  console.log("aaa")
-  // 加上后端的注册
+const handleSubmitSignUp = async () => {
+  if (isUsernameValid.value && isPasswordValid.value) {
+    try {
+      const response = await fetch('http://localhost:5001/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: signUpUser.value,
+          password: signUpPassword.value
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert('注册成功！');
+        toggleSignIn(); // 切换到登录界面
+      } else {
+        alert(`注册失败：${data.message}`);
+      }
+    } catch (error) {
+      alert('网络错误或服务器无响应');
+    }
+  }
 };
 
-const handleSubmitSignIn = () => {
-  // if(账号密码正确)
-  // 加上后端的登录
+const handleSubmitSignIn = async () => {
+  try {
+    const response = await fetch('http://localhost:5001/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: signInUser.value,
+        password: signInPassword.value
+      })
+    });
+    const data = await response.json();
+    if (response.ok) {
+      alert('登录成功！');
+      // 进行页面跳转或状态更新
+    } else {
+      alert(`登录失败：${data.message}`);
+    }
+  } catch (error) {
+    alert('网络错误或服务器无响应');
+  }
 };
 
 let isUsernameValid = ref(false);
@@ -82,30 +121,30 @@ let usernameMsg = ref('');
 let userPwdMsg = ref('');
 
 function checkUsername() {
-  let usernameReg = /^.{3,12}$/
+  const usernameReg = /^.{3,12}$/;
   if (!usernameReg.test(signUpUser.value)) {
       isUsernameValid.value = false;
-      usernameMsg.value = "illegal"
-      return false
+      usernameMsg.value = "Username should be 3-12 characters";
+      return false;
   }
   isUsernameValid.value = true;
-  usernameMsg.value = "OK"
-  return true
+  usernameMsg.value = "OK";
+  return true;
 }
 
 function checkUserPwd() {
-  let passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+.,/;'']{6,20}$/
+  const passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+.,/;'']{6,20}$/;
   if (!passwordReg.test(signUpPassword.value)) {
       isPasswordValid.value = false;
-      userPwdMsg.value = "illegal"
-      return false
+      userPwdMsg.value = "Password should be 6-20 characters";
+      return false;
   }
   isPasswordValid.value = true;
-  userPwdMsg.value = "OK"
-  return true
+  userPwdMsg.value = "OK";
+  return true;
 }
-// import {isRightPanelActive,signUpUser,signUpPassword,signInPassword,signInUser,toggleSignIn,toggleSignUp} from '../jses/Loginregist.js'
 </script>
+
 
 <style scoped>
 .container {

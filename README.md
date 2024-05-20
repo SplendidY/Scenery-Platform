@@ -26,7 +26,12 @@ git push
 终端输入git clone https://github.com/SplendidY/project1.git  
 
 打开方式：
-
+cd backend   
+   
+conda activate xxx   
+   
+python user.py   
+   
 cd frontend
 
 npm install  

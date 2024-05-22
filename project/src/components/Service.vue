@@ -50,7 +50,7 @@
           <Cesium />
         </div>
       </el-main>
-      <el-footer style="padding: 0; width: 100%; flex-shrink: 0;">
+      <el-footer style="padding: 0; width: 100%;">
         <el-menu
           active-text-color="#ffd04b"
           background-color="#545c64"
@@ -58,16 +58,16 @@
           class="el-menu-demo"
           mode="horizontal"
           text-color="#fff"
-          @select="handleSelect2"
-          style="width: 100%; margin: 0; border: none;"
+          @select="SwitchLayer"
+          style="width: 100%; margin: 0; border: none;height: 60px;"
         >
           <div class="flex-grow" />
           <el-menu-item index="1">&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;</el-menu-item>
           <el-sub-menu index="2">
-            <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer select&nbsp;&nbsp;&nbsp;&nbsp;</template>
-            <el-menu-item index="2-1">Layer1</el-menu-item>
-            <el-menu-item index="2-2">Layer2</el-menu-item>
-            <el-menu-item index="2-3">Layer3</el-menu-item>
+            <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
+            <el-menu-item index="2-1">OpenStreetMap</el-menu-item>
+            <el-menu-item index="2-2">Gaode Map</el-menu-item>
+            <el-menu-item index="2-3">Tian Map</el-menu-item>
             <el-sub-menu index="2-4">
               <template #title>layer4</template>
               <el-menu-item index="2-4-1">Layer4-1</el-menu-item>
@@ -75,25 +75,65 @@
               <el-menu-item index="2-4-3">Layer4-3</el-menu-item>
             </el-sub-menu>
           </el-sub-menu>
-          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;</el-menu-item>
+          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-input v-model="test"></el-input>
+          </el-menu-item>
+        <el-button type="primary" @click="dialogVisible = true" style="position: absolute; left:94%;height: 40px;font-size: 18px; top:10px">log out</el-button>
         </el-menu>
       </el-footer>
     </el-container>
+    <el-dialog
+      v-model="dialogVisible"
+      title="Sure ?"
+      width="500"
+      :before-close="handleClose"
+    >
+      <span>Sure to log out ?</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">No</el-button>
+          <router-link to="/login">
+            <el-button type="primary" @click="dialogVisible = false">
+              Sure
+            </el-button>
+          </router-link>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+// import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+// import en from 'element-plus/dist/locale/en.mjs'
 import Cesium from './Cesium.vue'
-
+import { SwitchLayer } from '../jses/ditu'
 const isCollapse = ref(true)
+const test = ref()
+const dialogVisible = ref(false)
+// const language = ref('zh-cn')
+// const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
+
+// const toggle = () => {
+//   language.value = language.value === 'zh-cn' ? 'en' : 'zh-cn'
+// }
+const handleClose = (done) => {
+  ElMessageBox.confirm('Are you sure to close this dialog?')
+    .then(() => {
+      done();
+    })
+    .catch(() => {
+      // catch error
+    });
+};
 
 </script>
 
 <style>
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 200px;
+  width: 300px;
 }
 .flex-grow {
   flex-grow: 0;

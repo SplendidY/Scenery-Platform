@@ -76,58 +76,92 @@
             </el-sub-menu>
           </el-sub-menu>
           <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-input v-model="test"></el-input>
+            <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button>
           </el-menu-item>
-        <el-button type="primary" @click="dialogVisible = true" style="position: absolute; left:94%;height: 40px;font-size: 18px; top:10px">log out</el-button>
         </el-menu>
+        <div style="position: absolute;right: 3%;bottom: 1%;">
+            <el-button class="avatar-button" @click="drawer = true">
+              <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+            </el-button>
+            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 40px; font-size: 18px;">log out</el-button>
+        </div>
       </el-footer>
     </el-container>
-    <el-dialog
-      v-model="dialogVisible"
-      title="Sure ?"
-      width="500"
-      :before-close="handleClose"
-    >
+    <el-dialog v-model="dialogVisible" title="Sure ?" width="500">
       <span>Sure to log out ?</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">No</el-button>
           <router-link to="/login">
-            <el-button type="primary" @click="dialogVisible = false">
+            <el-button type="primary" style="margin-left: 10px;" @click="dialogVisible = false">
               Sure
             </el-button>
           </router-link>
         </div>
+        
       </template>
     </el-dialog>
+    <el-descriptions
+      v-show="userinfo"
+      title="Vertical list with border"
+      direction="vertical"
+      :column="4"
+      :size="size"
+      style="position: absolute;right:1%;bottom: 20%;width: 25%;background-color: aliceblue;z-index: 10; border: 1px solid #ebeef5; border-radius: 4px; padding: 20px;"
+      border
+    >
+      <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>
+      <el-descriptions-item label="Password">{{ password }}</el-descriptions-item>
+      <el-descriptions-item label="Place" :span="2">Hangzhou</el-descriptions-item>
+      <!-- <el-descriptions-item label="Remarks">
+        <el-tag size="small">School</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="Address">
+        No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
+      </el-descriptions-item> -->
+    </el-descriptions>
+    <el-drawer v-model="drawer" title="I am the title" :with-header="false" size="11%">
+      <div style="display: flex;align-items: center;">
+        <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+        <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
+      </div>
+    </el-drawer>  
   </div>
 </template>
 
 
 <script setup>
-import { computed, ref } from 'vue'
+import { ref,computed} from 'vue'
 // import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // import en from 'element-plus/dist/locale/en.mjs'
 import Cesium from './Cesium.vue'
 import { SwitchLayer } from '../jses/ditu'
+import { useStore } from 'vuex';
+const store = useStore();
+const drawer = ref(false)
+const username = computed(() => store.state.username);
+const password = computed(() => store.state.password);
 const isCollapse = ref(true)
 const test = ref()
 const dialogVisible = ref(false)
+const userinfo = ref(false);
+console.log(username.value);
+console.log(password.value);
+
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
-
 // const toggle = () => {
 //   language.value = language.value === 'zh-cn' ? 'en' : 'zh-cn'
-// }
-const handleClose = (done) => {
-  ElMessageBox.confirm('Are you sure to close this dialog?')
-    .then(() => {
-      done();
-    })
-    .catch(() => {
-      // catch error
-    });
-};
+// // }
+// const handleClose = (done) => {
+//   ElMessageBox.confirm('Are you sure to close this dialog?')
+//     .then(() => {
+//       done();
+//     })
+//     .catch(() => {
+//       // catch error
+//     });
+// };
 
 </script>
 
@@ -148,5 +182,13 @@ html, body {
 .el-footer {
   margin: 0;
   padding: 0;
+}
+
+.avatar-button {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
 }
 </style>

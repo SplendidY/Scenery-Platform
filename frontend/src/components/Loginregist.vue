@@ -47,9 +47,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex';
 import Header from './Header.vue'
 import { ElMessage } from 'element-plus'
-
 let isRightPanelActive = ref(false);
 let signUpUser = ref('');
 let signUpPassword = ref('');
@@ -61,6 +61,7 @@ let usernameMsg = ref('');
 let userPwdMsg = ref('');
 
 const router = useRouter();
+const store = useStore();
 
 const toggleSignIn = () => {
   isRightPanelActive.value = false;
@@ -110,8 +111,10 @@ const handleSubmitSignIn = async () => {
     });
     const data = await response.json();
     if (response.ok) {
+      store.commit('setUsername', data['username']);
+      store.commit('setPassword', data['password']);
       ElMessage.success({message:'Login successfully!',showClose:true});
-      router.push('/service');
+      router.push({ path: '/service' });
     } else {
       ElMessage.error({message:`Login failed:${data.message}`,showClose:true});
     }

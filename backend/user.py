@@ -42,7 +42,7 @@ def login():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
     if user and user.check_password(data['password']):
-        return jsonify({'message': 'Logged in successfully'}), 200
+        return jsonify({'message': 'Logged in successfully','username': data['username'],'password': data['password']}), 200
     return jsonify({'message': 'Invalid username or password'}), 401
 
 if __name__ == '__main__':

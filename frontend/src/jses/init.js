@@ -19,15 +19,12 @@ function init() {
   viewer._cesiumWidget._creditContainer.style.display = "none";
   // window.viewer = viewer;
   viewer.camera.setView({
-            destination: Cesium.Cartesian3.fromDegrees(120, 30, 15000000),
-            orientation: {
-            heading : Cesium.Math.toRadians(348.4202942851978),
-            pitch : Cesium.Math.toRadians(-89.74026687972041),
-            roll : Cesium.Math.toRadians(0)
-        },
-        complete:function callback() {
-        }
-        }); 
+    destination: Cesium.Cartesian3.fromDegrees(119.5, 29.3, 600000),
+    orientation: {
+        heading: Cesium.Math.toRadians(360),
+        pitch: Cesium.Math.toRadians(-90),
+        roll: Cesium.Math.toRadians(0)
+    }});
   Cesium.CesiumTerrainProvider.fromIonAssetId(1, {
     requestWaterMask:true,
     requestVertexNormals:true,

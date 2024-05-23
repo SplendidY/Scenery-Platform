@@ -1,61 +1,67 @@
 <template>
   <div>
-  <div class="background-container">
-    <Header></Header>
-  <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" >
-    
-  <div class="container__form container--signup">
-    <form class="form" @submit.prevent="handleSubmitSignUp">  
-      <h2 class="form__title">Sign Up</h2>
-      <input type="text" v-model="signUpUser" placeholder="User(3-12characters)" class="input" @blur="checkUsername()"/>
-      <span :class="{ 'error-text': !isUsernameValid }">{{ usernameMsg }}</span>
-      <input type="password" v-model="signUpPassword" placeholder="Password(6-20characters)" class="input" @blur="checkUserPwd()"/>
-      <span :class="{ 'error-text': !isPasswordValid }">{{ userPwdMsg }}</span>
-      <button type="submit" class="btn" >Sign Up</button>
-    </form>
-  </div>
+    <div class="background-container">
+      <Header></Header>
+      <div class="container" :class="{ 'right-panel-active': isRightPanelActive }">
+        <div class="container__form container--signup">
+          <form class="form" @submit.prevent="handleSubmitSignUp">
+            <p class="form__title">Sign Up</p>
+            <input type="text" v-model="signUpUser" placeholder="User(3-12characters)" class="input" @blur="checkUsername()" />
+            <span :class="{ 'error-text': !isUsernameValid }">{{ usernameMsg }}</span>
+            <input type="password" v-model="signUpPassword" placeholder="Password(6-20characters)" class="input" @blur="checkUserPwd()" />
+            <span :class="{ 'error-text': !isPasswordValid }">{{ userPwdMsg }}</span>
+            <button type="submit" class="btn">Sign Up</button>
+          </form>
+        </div>
 
-  <div class="container__form container--signin">
-    <form class="form" @submit.prevent="handleSubmitSignIn">
-      <h2 class="form__title">Sign In</h2>
-      <input type="text" v-model="signInUser" placeholder="User" class="input" />
-      <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
-      <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">Forgot your password?</a>
-      <router-link :to="true === true ? '/service' : '#'">      
-        <button type="submit" class="btn" id="inbtn">Sign In</button>
-    </router-link>
-    </form>
-  </div>
+        <div class="container__form container--signin">
+          <form class="form" @submit.prevent="handleSubmitSignIn">
+            <p class="form__title">Sign In</p>
+            <input type="text" v-model="signInUser" placeholder="User" class="input" />
+            <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
+            <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">Forgot your password?</a>
+            <button type="submit" class="btn" id="inbtn">Sign In</button>
+          </form>
+        </div>
 
-  <!-- Overlay -->
-  <div class="container__overlay">
-    <div class="overlay">
-      <div class="overlay__panel overlay--left">
-      <router-link to="/login">
-        <button class="btn" @click="toggleSignIn" id="changein">Sign In</button>
-      </router-link>
-      </div>
-      <div class="overlay__panel overlay--right">
-      <router-link to="/regist">
-        <button class="btn" @click="toggleSignUp">Sign Up</button>
-      </router-link>
+        <!-- Overlay -->
+        <div class="container__overlay">
+          <div class="overlay">
+            <div class="overlay__panel overlay--left">
+              <router-link to="/login">
+                <button class="btn" @click="toggleSignIn" id="changein">Sign In</button>
+              </router-link>
+            </div>
+            <div class="overlay__panel overlay--right">
+              <router-link to="/regist">
+                <button class="btn" @click="toggleSignUp">Sign Up</button>
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-</div>
-</div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex';
 import Header from './Header.vue'
-
+import { ElMessage } from 'element-plus'
 let isRightPanelActive = ref(false);
 let signUpUser = ref('');
 let signUpPassword = ref('');
 let signInPassword = ref('');
 let signInUser = ref('');
+let isUsernameValid = ref(false);
+let isPasswordValid = ref(false);
+let usernameMsg = ref('');
+let userPwdMsg = ref('');
+
+const router = useRouter();
+const store = useStore();
 
 const toggleSignIn = () => {
   isRightPanelActive.value = false;
@@ -65,54 +71,90 @@ const toggleSignUp = () => {
   isRightPanelActive.value = true;
 };
 
-const handleSubmitSignUp = () => {
-  if((isUsernameValid.value==true)&&(isPasswordValid.value==true))
-  console.log("aaa")
-  // 加上后端的注册
+const handleSubmitSignUp = async () => {
+  if (isUsernameValid.value && isPasswordValid.value) {
+    try {
+      const response = await fetch('http://localhost:5001/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: signUpUser.value,
+          password: signUpPassword.value
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        ElMessage.success({message:'Regist successfully!',showClose:true});
+        toggleSignIn(); // 切换登录界面
+      } else {
+        ElMessage.error({message:`Regist failed:${data.message}`,showClose:true});
+      }
+    } catch (error) {
+      ElMessage.error({message:'Network errors or server unresponsiveness',showClose:true});
+    }
+  }
 };
 
-const handleSubmitSignIn = () => {
-  // if(账号密码正确)
-  // 加上后端的登录
+const handleSubmitSignIn = async () => {
+  try {
+    const response = await fetch('http://localhost:5001/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: signInUser.value,
+        password: signInPassword.value
+      })
+    });
+    const data = await response.json();
+    if (response.ok) {
+      store.commit('setUsername', data['username']);
+      store.commit('setPassword', data['password']);
+      ElMessage.success({message:'Login successfully!',showClose:true});
+      router.push({ path: '/service' });
+    } else {
+      ElMessage.error({message:`Login failed:${data.message}`,showClose:true});
+    }
+  } catch (error) {
+    ElMessage.error({message:'Network errors or server unresponsiveness',showClose:true});
+  }
 };
-
-let isUsernameValid = ref(false);
-let isPasswordValid = ref(false);
-let usernameMsg = ref('');
-let userPwdMsg = ref('');
 
 function checkUsername() {
-  let usernameReg = /^.{3,12}$/
+  const usernameReg = /^.{3,12}$/;
   if (!usernameReg.test(signUpUser.value)) {
-      isUsernameValid.value = false;
-      usernameMsg.value = "illegal"
-      return false
+    isUsernameValid.value = false;
+    usernameMsg.value = "Username should be 3-12 characters";
+    return false;
   }
   isUsernameValid.value = true;
-  usernameMsg.value = "OK"
-  return true
+  usernameMsg.value = "OK";
+  return true;
 }
 
 function checkUserPwd() {
-  let passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+.,/;'']{6,20}$/
+  const passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+.,/;'']{6,20}$/;
   if (!passwordReg.test(signUpPassword.value)) {
-      isPasswordValid.value = false;
-      userPwdMsg.value = "illegal"
-      return false
+    isPasswordValid.value = false;
+    userPwdMsg.value = "Password should be 6-20 characters";
+    return false;
   }
   isPasswordValid.value = true;
-  userPwdMsg.value = "OK"
-  return true
+  userPwdMsg.value = "OK";
+  return true;
 }
-// import {isRightPanelActive,signUpUser,signUpPassword,signInPassword,signInUser,toggleSignIn,toggleSignUp} from '../jses/Loginregist.js'
 </script>
+
 
 <style scoped>
 .container {
   border-radius: 0.7rem;
   box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25), 0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
-  height: 420px;
-  max-width: 760px;
+  height: 500px;
+  max-width: 900px;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -224,7 +266,7 @@ function checkUserPwd() {
   border: 1px solid #008997;
   color: #e9e9e9;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
   padding: 0.9rem 4rem;
@@ -269,10 +311,12 @@ function checkUserPwd() {
   color: #008997;
 }
 
-h2,span {
+p,span {
   color: #008997;
 }
-
+p {
+  font-size: 25px;
+}
 .link {
   color: #008997;
   text-decoration:none;
@@ -284,26 +328,13 @@ h2,span {
 
 #inbtn {
   position:relative;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 #changein{
   position: relative;
   margin-bottom: 5px;
 }
-
-/* .header-container{
-  background-image: url('../assets/1.jpg');
-  background-size: cover;
-  background-position: center;
-  position: fixed;
-  top: 0px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100px;
-  z-index: -1;
-} */
 
 .background-container {
   background-image: url('../assets/2.jpg');
@@ -314,7 +345,6 @@ h2,span {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: -1;
+  z-index: 0;
  }
-
 </style>

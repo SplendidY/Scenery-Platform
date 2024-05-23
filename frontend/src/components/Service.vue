@@ -79,11 +79,11 @@
             <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button>
           </el-menu-item>
         </el-menu>
-        <div style="position: absolute;right: 3%;bottom: 1%;">
+        <div style="position: absolute;right: 3%;bottom: 1.5%;">
             <el-button class="avatar-button" @click="drawer = true">
               <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
             </el-button>
-            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 40px; font-size: 18px;">log out</el-button>
+            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 30px; font-size: 16px;">log out</el-button>
         </div>
       </el-footer>
     </el-container>

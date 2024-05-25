@@ -13,12 +13,11 @@ function SwitchLayer(index) {
     else if (index === '2-2') {
     viewer.imageryLayers.removeAll();
     var gaodeProvider = new Cesium.UrlTemplateImageryProvider({
-        url: 'https://webst02.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
-        credit: '高德地图',
-        tilingScheme: new Cesium.WebMercatorTilingScheme(),
-        maximumLevel: 18,
-    });
-    viewer.imageryLayers.addImageryProvider(gaodeProvider);
+        url: "http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+        minimumLevel: 4,
+        maximumLevel: 18
+    })
+      viewer.imageryLayers.addImageryProvider(gaodeProvider);
     }
     else if (index === '2-3') {
     viewer.imageryLayers.removeAll();

@@ -1,3 +1,4 @@
+//router.js
 import {createRouter,createWebHashHistory} from 'vue-router'
 
 import Loginregist from '../components/Loginregist.vue'

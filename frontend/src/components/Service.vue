@@ -67,12 +67,6 @@
             <el-menu-item index="2-1">OpenStreetMap</el-menu-item>
             <el-menu-item index="2-2">Gaode Map (default)</el-menu-item>
             <el-menu-item index="2-3">Tian Map</el-menu-item>
-            <el-sub-menu index="2-4">
-              <template #title>layer4</template>
-              <el-menu-item index="2-4-1">Layer4-1</el-menu-item>
-              <el-menu-item index="2-4-2">Layer4-2</el-menu-item>
-              <el-menu-item index="2-4-3">Layer4-3</el-menu-item>
-            </el-sub-menu>
           </el-sub-menu>
           <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
             <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button>

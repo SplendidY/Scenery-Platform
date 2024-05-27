@@ -1,5 +1,4 @@
-//init.js
-import { getCurrentPosition } from './location.js';
+import { getCurrentPosition, getLongitude, getLatitude, getmap } from './location.js';
 
 let viewer;
 
@@ -28,8 +27,17 @@ async function init() {
     setHomeView(position.longitude, position.latitude);
   } catch (error) {
     console.error('定位失败:', error.message);
-    setView(120.5, 29.5);
-    setHomeView(120.5, 29.5);
+    setView(120, 30);
+    setHomeView(120, 30);
+  }
+}
+async function route() {
+  const position = await getCurrentPosition();
+  try {
+  await drawRoute(position.longitude, position.latitude, 120, 30);
+  }
+  catch (error) {
+    console.error('路线失败:',error.message);
   }
 }
 
@@ -53,7 +61,7 @@ function setView(longitude, latitude) {
   });
 
   var layer = new Cesium.UrlTemplateImageryProvider({
-    url: "http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+    url: "http://webrd02.is.autonavi.com/appmaptile?lang=en&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
     minimumLevel: 4,
     maximumLevel: 18
   });
@@ -75,11 +83,52 @@ function setHomeView(longitude, latitude) {
   });
 }
 
+async function drawRoute(startLng, startLat, endLng, endLat) {
+  const map = getmap();
+  await new Promise((resolve, reject) => {
+    AMap.plugin('AMap.Driving', function () {
+      try {
+        var driving = new AMap.Driving({
+          map: map,
+          panel: "service"
+        });
+        driving.search(new AMap.LngLat(startLng, startLat), new AMap.LngLat(endLng, endLat), function (status, result) {
+          if (status === 'complete' && result.routes && result.routes.length > 0) {
+            var path = result.routes[0].steps.reduce((acc, step) => {
+              return acc.concat(step.path);
+            }, []);
+            var positions = path.map(point => {
+              return Cesium.Cartesian3.fromDegrees(point.lng, point.lat);
+            });
+            viewer.entities.add({
+              polyline: {
+                positions: positions,
+                width: 5,
+                material: Cesium.Color.RED
+              }
+            });
+            
+            console.log('绘制驾车路线完成');
+            resolve();
+          } else {
+            console.error('获取驾车数据失败:', result);
+            reject(new Error('获取驾车数据失败'));
+          }
+        });
+      } catch (e) {
+        console.error('AMap.Driving error:', e);
+        reject(e);
+      }
+    });
+  });
+}
+
 function getViewer() {
   return viewer;
 }
 
 export {
   init,
-  getViewer
+  getViewer,
+  route
 }

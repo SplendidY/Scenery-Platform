@@ -1,7 +1,12 @@
-//location.js
+let currentPosition = {
+  longitude: null,
+  latitude: null
+};
+var map;
+
 export function getCurrentPosition() {
   return new Promise((resolve, reject) => {
-    var map = new AMap.Map('container', {
+      map = new AMap.Map('container', {
       resizeEnable: true
     });
 
@@ -16,14 +21,25 @@ export function getCurrentPosition() {
       map.addControl(geolocation);
       geolocation.getCurrentPosition(function(status, result) {
         if (status === 'complete') {
-          resolve({
-            longitude: result.position.lng,
-            latitude: result.position.lat
-          });
+          currentPosition.longitude = result.position.lng;
+          currentPosition.latitude = result.position.lat;
+          resolve(currentPosition);
         } else {
           reject(new Error(result.message));
         }
       });
     });
   });
+}
+
+export function getLongitude() {
+  return currentPosition.longitude;
+}
+
+export function getLatitude() {
+  return currentPosition.latitude;
+}
+
+export function getmap() {
+  return map;
 }

@@ -8,8 +8,6 @@ function SwitchLayer(index) {
         url:"https://tile.openstreetmap.org/",
     });
     viewer.imageryLayers.addImageryProvider(osmProvider);
-    
-    console.log("b");
     }
     else if (index === '2-2') {
     viewer.imageryLayers.removeAll();

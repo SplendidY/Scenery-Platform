@@ -54,7 +54,6 @@
         <el-menu
           active-text-color="#ffd04b"
           background-color="#545c64"
-          :default-active="activeIndex"
           class="el-menu-demo"
           mode="horizontal"
           text-color="#fff"
@@ -66,7 +65,7 @@
           <el-sub-menu index="2">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
             <el-menu-item index="2-1">OpenStreetMap</el-menu-item>
-            <el-menu-item index="2-2">Gaode Map</el-menu-item>
+            <el-menu-item index="2-2">Gaode Map (default)</el-menu-item>
             <el-menu-item index="2-3">Tian Map</el-menu-item>
             <el-sub-menu index="2-4">
               <template #title>layer4</template>
@@ -145,8 +144,6 @@ const isCollapse = ref(true)
 const test = ref()
 const dialogVisible = ref(false)
 const userinfo = ref(false);
-console.log(username.value);
-console.log(password.value);
 
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))

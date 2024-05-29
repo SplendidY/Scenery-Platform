@@ -6,7 +6,7 @@ var map;
 
 export function getCurrentPosition() {
   return new Promise((resolve, reject) => {
-      map = new AMap.Map('container', {
+    map = new AMap.Map('container', {
       resizeEnable: true
     });
 

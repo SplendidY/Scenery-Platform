@@ -111,5 +111,5 @@ function getViewer() {
 }
 
 export {
-  getViewer,init,
+  getViewer,init
 }

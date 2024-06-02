@@ -69,7 +69,8 @@
             <el-menu-item index="2-3">Tian Map</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button>
+            <!-- <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button> -->
+            <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click=getjw>Check</el-button>
           </el-menu-item>
         </el-menu>
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
@@ -103,8 +104,8 @@
       style="position: absolute;right:1%;bottom: 20%;width: 25%;background-color: aliceblue;z-index: 10; border: 1px solid #ebeef5; border-radius: 4px; padding: 20px;"
       border
     >
-      <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>
-      <el-descriptions-item label="Password">{{ password }}</el-descriptions-item>
+      <el-descriptions-item label="Username">{{ store.state.username }}</el-descriptions-item>
+      <el-descriptions-item label="Password">{{ this.$store.state.password }}</el-descriptions-item>
       <el-descriptions-item label="Place" :span="2">Hangzhou</el-descriptions-item>
       <!-- <el-descriptions-item label="Remarks">
         <el-tag size="small">School</el-tag>
@@ -124,12 +125,15 @@
 
 
 <script setup>
-import { ref,computed} from 'vue'
+import { ref,computed,onMounted } from 'vue'
 // import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-// import en from 'element-plus/dist/locale/en.mjs'
+// import en from 'element-plus/dist/locaFle/en.mjs'
 import Cesium from './Cesium.vue'
 import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
+import { route } from '../jses/route';
+import axios from 'axios';
+
 const store = useStore();
 const drawer = ref(false)
 const username = computed(() => store.state.username);
@@ -138,7 +142,41 @@ const isCollapse = ref(true)
 const test = ref()
 const dialogVisible = ref(false)
 const userinfo = ref(false);
+const locations = ref([]);
+const jsonUrl = new URL('../resources/data.json', import.meta.url).href;
 
+const fetchData = async () => {
+  try {
+    const response = await axios.get(jsonUrl, { responseType: 'arraybuffer' });
+    const decoder = new TextDecoder('gb2312');
+    const text = decoder.decode(response.data);
+    locations.value = JSON.parse(text);
+    console.log(locations.value);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+// 获取经纬度的函数
+const getjw = () => {
+  const item = locations.value.find(d => d.NAME === test.value);
+  if (item) {
+    const coords = item.geometry.match(/POINT \((\d+\.\d+) (\d+\.\d+)\)/);
+    if (coords) {
+      const endj = parseFloat(coords[1]);
+      const endw = parseFloat(coords[2]);
+      store.commit('setendj', endj); // 假设 store 已经在你的项目中定义并引入
+      store.commit('setendw', endw);
+      route();
+    } else {
+      console.error('Invalid geometry format');
+    }
+  } else {
+    console.error('Name not found');
+  }
+};
+
+onMounted(fetchData);
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
 // const toggle = () => {

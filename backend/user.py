@@ -31,12 +31,6 @@ class FavoriteAttractions(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     attraction_name = db.Column(db.String(255), nullable=False)
     added_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-
-class FavoriteAttractions(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    attraction_name = db.Column(db.String(255), nullable=False)
-    added_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
     
 def setup_database():
     with app.app_context():

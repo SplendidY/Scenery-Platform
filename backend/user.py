@@ -57,6 +57,15 @@ def login():
         return jsonify({'message': 'Logged in successfully','username': data['username'],'password': data['password']}), 200
     return jsonify({'message': 'Invalid username or password'}), 401
 
+@app.route('/api/search_history', methods=['GET'])
+def get_search_history():
+    user_id = request.args.get('user_id')  # 实际部署中可能需要更安全的用户验证机制
+    if not user_id:
+        return jsonify({'message': 'User ID is required'}), 400
+    # 查询指定用户的搜索历史记录
+    search_histories = SearchHistory.query.filter_by(user_id=user_id).order_by(SearchHistory.timestamp.desc()).all()
+    return jsonify([{'id': history.id, 'search_text': history.search_text, 'timestamp': history.timestamp} for history in search_histories]), 200
+
 @app.route('/add_search_history', methods=['POST'])
 def add_search_history():
     data = request.get_json()

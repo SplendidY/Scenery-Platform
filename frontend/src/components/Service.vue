@@ -113,15 +113,16 @@
           </el-sub-menu>
           <el-menu-item index="3">
             &nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-dropdown trigger="click" @command="handleDropdownCommand" >
-              <el-input v-model="test" @click.native="handleInputClick"></el-input>
+            <el-dropdown trigger="click" @command="handleDropdownCommand">
+              <el-input v-model="searchText" @click.native="fetchSearchHistory"></el-input>
               <template #dropdown>
                 <p class="heading">搜索历史</p>
                 <el-scrollbar height="300px">
-                  <p v-for="item in 20" :key="item" class="scrollbar-demo-item">{{ item }}</p>
+                  <p v-for="item in searchHistory" :key="item.id" class="scrollbar-demo-item">{{ item.search_text }}</p>
                 </el-scrollbar>
               </template>
             </el-dropdown>
+            <el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button>
           </el-menu-item>
         </el-menu>
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
@@ -175,38 +176,39 @@
 </template>
 
 <script setup>
-import { ref,computed} from 'vue'
+import { ref, computed } from 'vue'
+import axios from 'axios'
 // import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 // import en from 'element-plus/dist/locale/en.mjs'
 import Cesium from './Cesium.vue'
 import { SwitchLayer } from '../jses/ditu'
-import { useStore } from 'vuex';
-const store = useStore();
+import { useStore } from 'vuex'
+
+const store = useStore()
 const drawer = ref(false)
-const username = computed(() => store.state.username);
-const password = computed(() => store.state.password);
+const username = computed(() => store.state.username)
+const password = computed(() => store.state.password)
 const isCollapse = ref(true)
 const test = ref()
 const dialogVisible = ref(false)
-const userinfo = ref(false);
+const userinfo = ref(false)
+const searchText = ref('')
+const searchHistory = ref([])
 
+const fetchSearchHistory = async () => {
+  try {
+    const response = await axios.get('/api/search_history')
+    searchHistory.value = response.data
+  } catch (error) {
+    console.error('Error fetching search history:', error)
+  }
+}
 
-// const language = ref('zh-cn')
-// const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
-// const toggle = () => {
-//   language.value = language.value === 'zh-cn' ? 'en' : 'zh-cn'
-// // }
-// const handleClose = (done) => {
-//   ElMessageBox.confirm('Are you sure to close this dialog?')
-//     .then(() => {
-//       done();
-//     })
-//     .catch(() => {
-//       // catch error
-//     });
-// };
-
+const handleDropdownCommand = (command) => {
+  console.log('Command:', command)
+}
 </script>
+
 
 <style>
 .el-menu-vertical:not(.el-menu--collapse) {

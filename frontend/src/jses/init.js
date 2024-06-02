@@ -1,3 +1,4 @@
+//init.js
 import { getCurrentPosition } from './location.js';
 
 let viewer;
@@ -10,7 +11,6 @@ async function init() {
     baseLayerPicker: false,
     fullscreenButton: false,
     geocoder: false,
-    homeButton: false,
     infoBox: false,
     selectionIndicator: false,
     navigationHelpButton: false,
@@ -25,15 +25,17 @@ async function init() {
     const position = await getCurrentPosition();
     console.log('定位成功:', position);
     setView(position.longitude, position.latitude);
+    setHomeView(position.longitude, position.latitude);
   } catch (error) {
     console.error('定位失败:', error.message);
     setView(120.5, 29.5);
+    setHomeView(120.5, 29.5);
   }
 }
 
 function setView(longitude, latitude) {
   viewer.camera.setView({
-    destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 6000),
+    destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 5000),
     orientation: {
       heading: Cesium.Math.toRadians(360),
       pitch: Cesium.Math.toRadians(-90),
@@ -57,6 +59,20 @@ function setView(longitude, latitude) {
   });
 
   viewer.imageryLayers.addImageryProvider(layer);
+}
+
+function setHomeView(longitude, latitude) {
+  viewer.homeButton.viewModel.command.beforeExecute.addEventListener(function (e) {
+    e.cancel = true;
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 5000),
+      orientation: {
+        heading: Cesium.Math.toRadians(360),
+        pitch: Cesium.Math.toRadians(-90),
+        roll: Cesium.Math.toRadians(0)
+      }
+    });
+  });
 }
 
 function getViewer() {

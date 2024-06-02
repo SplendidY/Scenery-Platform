@@ -1,3 +1,4 @@
+//ditu.js
 import { getViewer } from './init'
 function SwitchLayer(index) {
     const viewer = getViewer();

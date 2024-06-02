@@ -3,6 +3,7 @@ import {createRouter,createWebHashHistory} from 'vue-router'
 
 import Loginregist from '../components/Loginregist.vue'
 import Service from '../components/Service.vue'
+import User from '../components/user.vue'
 
 let router = createRouter({
     history:createWebHashHistory(),
@@ -22,7 +23,11 @@ let router = createRouter({
         {
             path:"/service",
             component:Service
-        }
+        },
+        {
+            path: "/user",
+            component:User 
+        },
     ]
 })
 

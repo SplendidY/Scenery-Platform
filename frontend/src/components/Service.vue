@@ -21,7 +21,8 @@
         <el-menu-item-group>
           <template #title><span>Group One</span></template>
           <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
+          <el-menu-item index="1-2">item two
+          </el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="Group Two">
           <el-menu-item index="1-3">item three</el-menu-item>
@@ -31,10 +32,46 @@
           <el-menu-item index="1-4-1">item one</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon><icon-menu /></el-icon>
-        <template #title>Navigator Two</template>
-      </el-menu-item>
+      <el-sub-menu index="2">
+  <template #title>
+    <el-icon><location /></el-icon>
+    <span>个性化推荐</span>
+  </template>
+  
+  <el-menu-item index="2-1">
+    <template #default>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>item three</span>
+        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"  alt="item three image" style="width: 20px; height: 20px;" >
+      </div>
+    </template>
+  </el-menu-item>
+
+      
+  <el-menu-item index="2-2">
+    <template #default>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>item three</span>
+        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"  alt="item three image" style="width: 20px; height: 20px;">
+      </div>
+    </template>
+  </el-menu-item>
+
+  <el-menu-item index="2-3">
+    <template #default>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>item three</span>
+        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"  alt="item three image" style="width: 20px; height: 20px;">
+      </div>
+    </template>
+  </el-menu-item>
+  <el-menu-item index="2-4">
+    <template #default>
+      <el-button>为您重新推荐</el-button>
+    </template>
+  </el-menu-item>
+</el-sub-menu>
+
       <el-menu-item index="3">
         <el-icon><document /></el-icon>
         <template #title>Navigator Three</template>
@@ -74,8 +111,17 @@
               <el-menu-item index="2-4-3">Layer4-3</el-menu-item>
             </el-sub-menu>
           </el-sub-menu>
-          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button>
+          <el-menu-item index="3">
+            &nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
+            <el-dropdown trigger="click" @command="handleDropdownCommand" >
+              <el-input v-model="test" @click.native="handleInputClick"></el-input>
+              <template #dropdown>
+                <p class="heading">搜索历史</p>
+                <el-scrollbar height="300px">
+                  <p v-for="item in 20" :key="item" class="scrollbar-demo-item">{{ item }}</p>
+                </el-scrollbar>
+              </template>
+            </el-dropdown>
           </el-menu-item>
         </el-menu>
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
@@ -128,7 +174,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref,computed} from 'vue'
 // import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
@@ -144,6 +189,7 @@ const isCollapse = ref(true)
 const test = ref()
 const dialogVisible = ref(false)
 const userinfo = ref(false);
+
 
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
@@ -187,5 +233,30 @@ html, body {
   padding: 0;
   cursor: pointer;
   border-radius: 50%;
+}
+.heading{
+  margin: 10px;
+}
+
+.bottom-left-container {
+  width: 300px;
+  max-height: 400px;
+  overflow: auto;
+}
+.el-dropdown .el-dropdown-menu {
+  width: 300px;
+}
+.scrollbar-demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 280px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+  white-space: nowrap; 
 }
 </style>

@@ -7,7 +7,8 @@ var map;
 export function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     map = new AMap.Map('container', {
-      resizeEnable: true
+      resizeEnable: true,
+      zoom: 13
     });
 
     AMap.plugin('AMap.Geolocation', function() {

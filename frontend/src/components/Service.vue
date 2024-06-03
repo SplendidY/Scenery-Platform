@@ -68,7 +68,7 @@
             <el-menu-item index="2-2">Gaode Map (default)</el-menu-item>
             <el-menu-item index="2-3">Tian Map</el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <!-- <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button> -->
             <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click=getjw>Check</el-button>
           </el-menu-item>
@@ -87,7 +87,7 @@
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">No</el-button>
           <router-link to="/login">
-            <el-button type="primary" style="margin-left: 10px;" @click="dialogVisible = false">
+            <el-button type="primary" style="margin-left: 10px;" @click="dialogVisible = false;deletejw()">
               Sure
             </el-button>
           </router-link>
@@ -157,7 +157,6 @@ const fetchData = async () => {
   }
 };
 
-// 获取经纬度的函数
 const getjw = () => {
   const item = locations.value.find(d => d.NAME === test.value);
   if (item) {
@@ -165,7 +164,7 @@ const getjw = () => {
     if (coords) {
       const endj = parseFloat(coords[1]);
       const endw = parseFloat(coords[2]);
-      store.commit('setendj', endj); // 假设 store 已经在你的项目中定义并引入
+      store.commit('setendj', endj);
       store.commit('setendw', endw);
       route();
     } else {
@@ -175,6 +174,10 @@ const getjw = () => {
     console.error('Name not found');
   }
 };
+
+const deletejw =() => {
+  store.commit('clearUser');
+}
 
 onMounted(fetchData);
 // const language = ref('zh-cn')

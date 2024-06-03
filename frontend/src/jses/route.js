@@ -27,21 +27,26 @@ async function drawRoute(startLng, startLat, endLng, endLat) {
     return Cesium.Cartesian3.fromDegrees(wgsCoord[0], wgsCoord[1]);
   });
 
-  // Clear the previous route if it exists
   if (previousRouteEntity) {
     viewer.entities.remove(previousRouteEntity);
   }
 
-  // Add the new route
   previousRouteEntity = viewer.entities.add({
     polyline: {
       positions: positions,
       width: 10,
       material: new Cesium.PolylineGlowMaterialProperty({
         glowPower: 0.4,
-        color: Cesium.Color.GREEN, // Change color to green
+        color: Cesium.Color.GREEN,
       }),
     },
+  });
+
+  const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
+
+  viewer.camera.flyToBoundingSphere(boundingSphere, {
+    duration: 2,
+    offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90), (boundingSphere.radius)*5)
   });
 }
 
@@ -53,7 +58,8 @@ async function getAMapDrivingRoute(startLng, startLat, endLng, endLat) {
       try {
         driving = new AMap.Driving({
           map: null,
-          panel: 'service'
+          panel: 'service',
+          autoFitView: true,
         });
         driving.search(
           new AMap.LngLat(startLng, startLat),

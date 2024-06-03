@@ -70,7 +70,15 @@
           </el-sub-menu>
           <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <!-- <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button> -->
-            <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click=getjw>Check</el-button>
+            <el-scrollbar v-if="filteredLocations.length && isFocused" style="height: 300px; width:300px; position: absolute; bottom: 50px; background-color: #545c64; color: white;">
+              <ul>
+                <li v-for="location in filteredLocations" :key="location.NAME" @click="selectLocation(location)" style="padding: 8px; cursor: pointer;">
+                  {{ location.NAME }}
+                </li>
+              </ul>
+            </el-scrollbar>
+            <el-input v-model="test" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur"></el-input>
+            <el-button style="margin-left: 10px;" type="primary" @click="getjw">Check</el-button>
           </el-menu-item>
         </el-menu>
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
@@ -144,18 +152,38 @@ const dialogVisible = ref(false)
 const userinfo = ref(false);
 const locations = ref([]);
 const jsonUrl = new URL('../resources/data.json', import.meta.url).href;
+const filteredLocations = ref([]);
+const isFocused = ref(false);
 
 const fetchData = async () => {
   try {
     const response = await axios.get(jsonUrl, { responseType: 'arraybuffer' });
     const decoder = new TextDecoder('gb2312');
-    const text = decoder.decode(response.data);
+    const text = decoder.decode(response.data); 
     locations.value = JSON.parse(text);
     console.log(locations.value);
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 };
+
+const filterLocations = () => {
+  const query = test.value.toLowerCase();
+  filteredLocations.value = locations.value.filter(location => location.NAME.toLowerCase().includes(query));
+};
+
+const selectLocation = (location) => {
+  test.value = location.NAME;
+  filteredLocations.value = [];
+  isFocused.value = false;
+};
+
+const handleBlur = () => {
+  setTimeout(() => {
+    isFocused.value = false;
+  }, 200);
+};
+
 
 const getjw = () => {
   const item = locations.value.find(d => d.NAME === test.value);

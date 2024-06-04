@@ -62,11 +62,10 @@
         >
           <div class="flex-grow" />
          <el-menu-item index="1">&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-input v-model="test" 
-            placeholder="请输入感兴趣的地点" 
+            <el-input v-model="test"             
             :prefix-icon="Search">
             </el-input>
-            <el-button style="margin-left: 10px;" type="primary" @click="drawer2=true">Check</el-button>
+            <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
           </el-menu-item>
           <el-sub-menu index="2">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
@@ -80,7 +79,9 @@
               <el-menu-item index="2-4-3">Layer4-3</el-menu-item>
             </el-sub-menu>
           </el-sub-menu>
-          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;</el-menu-item>
+          <el-menu-item index="3">
+            <el-button type="primary" :icon="Search" @click="drawer2=true">Search</el-button>
+          </el-menu-item>
         </el-menu>
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
             <el-button class="avatar-button" @click="drawer = true">
@@ -129,13 +130,22 @@
         <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
       </div>
     </el-drawer>  
+
     <el-drawer 
     v-model="drawer2" 
     title="I am the title" 
-    :with-header="false"
     style="overflow: auto;"
+    :before-close="handleClose"
     >
-      <div class="spot-photo">
+      <template #header>
+        <el-input v-model="test" 
+          placeholder="请输入感兴趣的地点"  
+          :prefix-icon="Search">
+        </el-input>
+            <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
+      </template>
+      <template #default>
+        <div class="spot-photo">
         <div style="text-align: center;">
           <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
         </div>
@@ -152,9 +162,7 @@
       </div>
       <div>
         <h4>Location</h4>
-        <p>
-        Hangzhou, China
-        </p>
+        <p>{{ location }}</p>
       </div>
       <div>
         <h4>Opening Hours</h4>
@@ -164,12 +172,10 @@
       </div>
       <div>
         <h4>Remarks</h4>
-        <p>
-        AG: good place, never come again.
-        </p>
+        <p>{{ remarks }}</p>
       </div> 
       <h4>
-        Your rate
+        Your Rate
       </h4>
       <div>
         <el-rate
@@ -178,7 +184,7 @@
         show-text
         />
         <h4>
-          Your Remarks
+          Your Remark
           <el-input
             v-model="userrmk"
             maxlength="30"
@@ -187,9 +193,13 @@
             show-word-limit
             type="text"
           />
-          <el-button type="success" :icon="Check" circle />
+          <el-button  type="primary">
+            Upload<el-icon class="el-icon--right"><Upload/></el-icon>
+          </el-button>
         </h4>
       </div>    
+      </template>
+      
     </el-drawer>
   </div>
 </template>
@@ -204,6 +214,7 @@ import {
   Message,
   Search,
   Star,
+  Upload,
 } from '@element-plus/icons-vue'
 import { ref,computed} from 'vue'
 // import zhCn from 'element-plus/dist/locale/zh-cn.mjs'

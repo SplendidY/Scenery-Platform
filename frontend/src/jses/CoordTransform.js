@@ -1,3 +1,5 @@
+//CoordTransform.js
+//别人写好的 直接拿来用
 const BD_FACTOR = (Math.PI * 3000.0) / 180.0;
 const PI = Math.PI;
 const RADIUS = 6378245.0;

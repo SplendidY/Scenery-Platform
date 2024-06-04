@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-
+//建立全局变量存储库
 const store = createStore({
   state: {
     username: localStorage.getItem('username') || '',

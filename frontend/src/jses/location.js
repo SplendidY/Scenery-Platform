@@ -1,9 +1,10 @@
+//location.js
 let currentPosition = {
   longitude: null,
   latitude: null
 };
 var map;
-
+//用ip获取当前位置
 export function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     map = new AMap.Map('container', {

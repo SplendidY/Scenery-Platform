@@ -24,7 +24,7 @@
           </form>
         </div>
 
-        <!-- Overlay -->
+        <!-- 遮罩 -->
         <div class="container__overlay">
           <div class="overlay">
             <div class="overlay__panel overlay--left">
@@ -70,7 +70,7 @@ const toggleSignIn = () => {
 const toggleSignUp = () => {
   isRightPanelActive.value = true;
 };
-
+//处理注册登录
 const handleSubmitSignUp = async () => {
   if (isUsernameValid.value && isPasswordValid.value) {
     try {
@@ -122,7 +122,7 @@ const handleSubmitSignIn = async () => {
     ElMessage.error({message:'Network errors or server unresponsiveness',showClose:true});
   }
 };
-
+//检查账号密码格式
 function checkUsername() {
   const usernameReg = /^.{3,12}$/;
   if (!usernameReg.test(signUpUser.value)) {

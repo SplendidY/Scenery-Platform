@@ -1,3 +1,4 @@
+//init.js
 import { getCurrentPosition } from './location';
 import {
   WebMercatorProjection,
@@ -7,9 +8,9 @@ import {
   Cartesian2,
 } from 'cesium';
 import CoordTransform from './CoordTransform';
-
+//全局变量viewer
 let viewer;
-
+//坐标转换
 class AmapMercatorTilingScheme extends WebMercatorTilingScheme {
   constructor() {
     super();
@@ -42,7 +43,7 @@ class AmapMercatorTilingScheme extends WebMercatorTilingScheme {
     };
   }
 }
-
+//初始化cesium球
 async function init() {
   Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0Y2U5MWRhOC0zYzdhLTRjMGItODkwNC02NzVmNGFmMTBkOWEiLCJpZCI6MjA1MjM5LCJpYXQiOjE3MTE2ODUwMjF9.RRfIFU8B-huDx7VQOLeAmMabtoIcIkA1m2SRaRYopUI';
   viewer = new Cesium.Viewer('cesiumContainer', {

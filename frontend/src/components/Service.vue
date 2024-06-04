@@ -1,5 +1,7 @@
 <template>
+  <!-- 整个div -->
   <div style="height: 100vh; display: flex; flex-direction: column; overflow: hidden;">
+    <!-- 左上角显隐栏 -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
       <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
         <el-radio-button :value="false">expand</el-radio-button>
@@ -37,19 +39,22 @@
       </el-menu-item>
       <el-menu-item index="3">
         <el-icon><document /></el-icon>
-        <template #title>Navigator Three</template>
+        <template #title>景点信息介绍</template>
       </el-menu-item>
       <el-menu-item index="4">
         <el-icon><setting /></el-icon>
-        <template #title>Navigator Four</template>
+        <template #title>旅游指数综合打分</template>
       </el-menu-item>
     </el-menu>
+    <!-- 整体 -->
     <el-container style="flex: 1; display: flex; flex-direction: column;">
+      <!-- Ceisum球 -->
       <el-main style="flex: 1; position: relative;">
         <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
           <Cesium />
         </div>
       </el-main>
+      <!-- 底部栏 -->
       <el-footer style="padding: 0; width: 100%;">
         <el-menu
           active-text-color="#ffd04b"
@@ -69,7 +74,7 @@
             <el-menu-item index="2-3">Tian Map</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <!-- <el-input v-model="test"></el-input><el-button style="margin-left: 10px;" type="primary" @click="userinfo = !userinfo">Check</el-button> -->
+            <!-- 滚动栏 -->
             <el-scrollbar v-if="filteredLocations.length && isFocused" style="height: 300px; width:300px; position: absolute; bottom: 50px; background-color: #545c64; color: white;">
               <ul>
                 <li v-for="location in filteredLocations" :key="location.NAME" @click="selectLocation(location)" style="padding: 8px; cursor: pointer;">
@@ -81,6 +86,7 @@
             <el-button style="margin-left: 10px;" type="primary" @click="getjw">Check</el-button>
           </el-menu-item>
         </el-menu>
+        <!-- 用户头像 -->
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
             <el-button class="avatar-button" @click="drawer = true">
               <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
@@ -89,6 +95,7 @@
         </div>
       </el-footer>
     </el-container>
+    <!-- 退出按钮 -->
     <el-dialog v-model="dialogVisible" title="Sure ?" width="500">
       <span>Sure to log out ?</span>
       <template #footer>
@@ -100,8 +107,8 @@
             </el-button>
           </router-link>
         </div>
-        
       </template>
+    <!-- 信息栏 -->
     </el-dialog>
     <el-descriptions
       v-show="userinfo"
@@ -115,13 +122,8 @@
       <el-descriptions-item label="Username">{{ store.state.username }}</el-descriptions-item>
       <el-descriptions-item label="Password">{{ this.$store.state.password }}</el-descriptions-item>
       <el-descriptions-item label="Place" :span="2">Hangzhou</el-descriptions-item>
-      <!-- <el-descriptions-item label="Remarks">
-        <el-tag size="small">School</el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item label="Address">
-        No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
-      </el-descriptions-item> -->
     </el-descriptions>
+    <!-- 侧边栏 -->
     <el-drawer v-model="drawer" title="I am the title" :with-header="false" size="11%">
       <div style="display: flex;align-items: center;">
         <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
@@ -154,7 +156,7 @@ const locations = ref([]);
 const jsonUrl = new URL('../resources/data.json', import.meta.url).href;
 const filteredLocations = ref([]);
 const isFocused = ref(false);
-
+//获取数据
 const fetchData = async () => {
   try {
     const response = await axios.get(jsonUrl, { responseType: 'arraybuffer' });
@@ -184,7 +186,7 @@ const handleBlur = () => {
   }, 200);
 };
 
-
+//获取选中项目的经纬度
 const getjw = () => {
   const item = locations.value.find(d => d.NAME === test.value);
   if (item) {
@@ -206,7 +208,7 @@ const getjw = () => {
 const deletejw =() => {
   store.commit('clearUser');
 }
-
+//直接挂载 节省查询时间
 onMounted(fetchData);
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))

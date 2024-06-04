@@ -4,7 +4,7 @@ import { getViewer } from './init';
 import store from './store';
 
 let previousRouteEntity = null;
-
+//路径规划函数
 async function route() {
   const viewer = getViewer();
   const endj = store.state.endj;
@@ -17,7 +17,7 @@ async function route() {
     console.error('路线失败:', error.message);
   }
 }
-
+//将路径显示在Cesium球上
 async function drawRoute(startLng, startLat, endLng, endLat) {
   const viewer = getViewer();
   const routeCoordinates = await getAMapDrivingRoute(startLng, startLat, endLng, endLat);
@@ -51,14 +51,14 @@ async function drawRoute(startLng, startLat, endLng, endLat) {
 }
 
 var driving;
-
+//高德api获取路径
 async function getAMapDrivingRoute(startLng, startLat, endLng, endLat) {
   return new Promise((resolve, reject) => {
     AMap.plugin('AMap.Driving', function () {
       try {
         driving = new AMap.Driving({
           map: null,
-          panel: 'service',
+          panel: 'service',//这个service指的是右上角的路线表格而不是service.vue
           autoFitView: true,
         });
         driving.search(

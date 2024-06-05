@@ -364,66 +364,6 @@ const fetchSearchHistory = async () => {
     ElMessage.error({message: 'Network errors or server unresponsiveness', showClose: true});
   }
 };
-
-// method to handle menu item selection
-const handleSelect1 = (key: string, keyPath: Array<string>) => {
-  console.log('Selected menu item:', key, keyPath);
-  // Add your logic here
-};
-
-// method to add search history
-const addSearchHistory = async () => {
-  if (searchText.value.trim() !== '') {
-    console.log("Sending POST request with:", store.state.userId, searchText.value);
-    try {
-      const response = await fetch('http://localhost:5001/add_search_history', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          user_id: store.state.userId,
-          search_text: searchText.value
-        })
-      });
-      const data = await response.json();
-      console.log("Response received:", data);
-      if (response.ok) {
-        console.log('Search history added successfully:', data.message);
-        fetchSearchHistory();  // 重新获取搜索历史以更新列表
-      } else {
-        console.error('Failed to add search history:', data.message);
-        ElMessage.error({message: `Failed to add search history: ${data.message}`, showClose: true});
-      }
-    } catch (error) {
-      console.error('Error adding search history:', error);
-      ElMessage.error({message: 'Network errors or server unresponsiveness', showClose: true});
-    }
-  }
-};
-
-// method to fetch search history
-const fetchSearchHistory = async () => {
-  try {
-    const response = await fetch(`http://localhost:5001/api/search_history?user_id=${store.state.userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const data = await response.json();
-    if (response.ok) {
-      searchHistory.value = data;  // Assuming API returns an array of history
-    } else {
-      console.error('Failed to fetch search history:', data.message);
-      Message.error({message: `Failed to fetch search history: ${data.message}`, showClose: true});
-    }
-  } catch (error) {
-    console.error('Error fetching search history:', error);
-    Message.error({message: 'Network errors or server unresponsiveness', showClose: true});
-  }
-};
-
 </script>
 
 <style>

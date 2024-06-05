@@ -80,10 +80,9 @@
                   </div>
                   <div v-if="state.selectedMenu === '3'" class="menu-content">
                       <h2>历史记录</h2>
-                      <el-button class="btn1"type="primary" :icon="CloseBold ">清空历史记录</el-button>
+                      <el-button class="btn1"type="primary" :icon="CloseBold" @click="clearHistory">清空历史记录</el-button>
                     <el-scrollbar height="100%">
-                      <p v-for="item in 20" :key="item" class="scrollbar-demo-item">{{ item }}</p>
-                      
+                      <p v-for="(item, index) in searchHistory" :key="item" class="scrollbar-demo-item">{{ item }}</p>
                     </el-scrollbar>
                     <history/>
                   </div>
@@ -104,7 +103,11 @@ import { useRouter } from 'vue-router'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { reactive } from 'vue'
 import { ref } from 'vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 const router = useRouter()
+const store = useStore();
+const searchHistory = computed(() => store.state.searchHistory);
 
 import {
   Document,

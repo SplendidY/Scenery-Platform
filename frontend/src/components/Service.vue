@@ -140,14 +140,14 @@
           placeholder="请输入感兴趣的地点"  
           :prefix-icon="Search">
         </el-input>
-            <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
+        <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
       </template>
       <template #default>
         <div class="spot-photo">
-        <div style="text-align: center;">
-          <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
+          <div style="text-align: center;">
+            <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
+          </div>
         </div>
-      </div>
       <div>
         <h3>Scenic Spot Name</h3>
         <p>{{ name }}</p>
@@ -204,8 +204,8 @@
             show-word-limit
             type="text"
           />
-          <el-button  type="primary">
-            Upload<el-icon class="el-icon--right"><Upload/></el-icon>
+          <el-button  type="primary" style="position: relative; left:10px;">
+            Upload<el-icon class="el-icon--right" @click="uploaduserrmk"><Upload/></el-icon>
           </el-button>
         </h4>
       </div>    
@@ -224,7 +224,7 @@ import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
 import { route } from '../jses/route';
 import axios from 'axios';
-import { Edit,ChatDotSquare,EditPen,Loading,Search } from '@element-plus/icons-vue';
+import { Edit,ChatDotSquare,EditPen,Loading,Search,Upload } from '@element-plus/icons-vue';
 
 const store = useStore();
 const drawer = ref(false);
@@ -314,7 +314,9 @@ const getjw = () => {
   }
 };
 
-
+const uploaduserrmk = (userrmk) => {
+  //发送修改文件请求至后端
+};
 
 const deletejw =() => {
   store.commit('clearUser');

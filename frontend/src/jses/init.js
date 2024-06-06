@@ -11,38 +11,7 @@ import CoordTransform from './CoordTransform';
 //全局变量viewer
 let viewer;
 //坐标转换
-class AmapMercatorTilingScheme extends WebMercatorTilingScheme {
-  constructor() {
-    super();
-    const projection = new WebMercatorProjection();
 
-    this._projection.project = function (cartographic, result) {
-      result = CoordTransform.WGS84ToGCJ02(
-        CesiumMath.toDegrees(cartographic.longitude),
-        CesiumMath.toDegrees(cartographic.latitude)
-      );
-      result = projection.project(
-        new Cartographic(
-          CesiumMath.toRadians(result[0]),
-          CesiumMath.toRadians(result[1])
-        )
-      );
-      return new Cartesian2(result.x, result.y);
-    };
-
-    this._projection.unproject = function (cartesian, result) {
-      const cartographic = projection.unproject(cartesian);
-      result = CoordTransform.GCJ02ToWGS84(
-        CesiumMath.toDegrees(cartographic.longitude),
-        CesiumMath.toDegrees(cartographic.latitude)
-      );
-      return new Cartographic(
-        CesiumMath.toRadians(result[0]),
-        CesiumMath.toRadians(result[1])
-      );
-    };
-  }
-}
 //初始化cesium球
 async function init() {
   Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0Y2U5MWRhOC0zYzdhLTRjMGItODkwNC02NzVmNGFmMTBkOWEiLCJpZCI6MjA1MjM5LCJpYXQiOjE3MTE2ODUwMjF9.RRfIFU8B-huDx7VQOLeAmMabtoIcIkA1m2SRaRYopUI';
@@ -62,13 +31,13 @@ async function init() {
   viewer.sceneModePicker.viewModel.duration = 0.0;
   viewer._cesiumWidget._creditContainer.style.display = 'none';
 
-  const imageryProvider = new Cesium.UrlTemplateImageryProvider({
-    url: 'https://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}',
-    minimumLevel: 3,
-    maximumLevel: 18,
-    tilingScheme: new AmapMercatorTilingScheme(),
-  });
-  viewer.imageryLayers.addImageryProvider(imageryProvider);
+const imageryProvider = new Cesium.UrlTemplateImageryProvider({
+  url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+  tilingScheme: new Cesium.WebMercatorTilingScheme(),
+});
+
+viewer.imageryLayers.addImageryProvider(imageryProvider);
+
 
   try {
     const position = await getCurrentPosition();

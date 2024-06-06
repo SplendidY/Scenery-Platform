@@ -10,7 +10,6 @@ async function route() {
   const endj = store.state.endj;
   const endw = store.state.endw;
   const position = await getCurrentPosition();
-  console.log(endj);
   try {
     await drawRoute(position.longitude, position.latitude, endj, endw);
   } catch (error) {

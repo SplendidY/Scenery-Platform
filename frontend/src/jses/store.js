@@ -4,8 +4,8 @@ const store = createStore({
   state: {
     username: localStorage.getItem('username') || '',
     password: localStorage.getItem('password') || '',
-    endj: localStorage.getItem('endj') || '',
-    endw: localStorage.getItem('endw') || '',
+    endj: '',
+    endw: '',
   },
   mutations: {
     setUsername(state, username) {
@@ -18,11 +18,9 @@ const store = createStore({
     },
     setendj(state, endj) {
       state.endj = endj;
-      localStorage.setItem('endj', endj);
     },
     setendw(state, endw) {
       state.endw = endw;
-      localStorage.setItem('endw', endw);
     },
     clearUser(state) {
       state.username = '';
@@ -31,8 +29,6 @@ const store = createStore({
       state.endw = '';
       localStorage.removeItem('username');
       localStorage.removeItem('password');
-      localStorage.removeItem('endj');
-      localStorage.removeItem('endw');
     }
   }
 });

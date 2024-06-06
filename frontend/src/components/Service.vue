@@ -17,7 +17,7 @@
     >
       <el-sub-menu index="1">
         <template #title>
-          <el-icon><location /></el-icon>
+          <el-icon><Edit /></el-icon>
           <span>Navigator One</span>
         </template>
         <el-menu-item-group>
@@ -34,15 +34,15 @@
         </el-sub-menu>
       </el-sub-menu>
       <el-menu-item index="2">
-        <el-icon><icon-menu /></el-icon>
+        <el-icon><Loading /></el-icon>
         <template #title>Navigator Two</template>
       </el-menu-item>
-      <el-menu-item index="3">
-        <el-icon><document /></el-icon>
-        <template #title>景点信息介绍</template>
+      <el-menu-item index="3" @click="tfdrawer2">
+        <el-icon><ChatDotSquare /></el-icon>
+        <template #title>景点信息</template>
       </el-menu-item>
       <el-menu-item index="4">
-        <el-icon><setting /></el-icon>
+        <el-icon><EditPen /></el-icon>
         <template #title>旅游指数综合打分</template>
       </el-menu-item>
     </el-menu>
@@ -66,14 +66,13 @@
           style="width: 100%; margin: 0; border: none;height: 60px;"
         >
           <div class="flex-grow" />
-          <el-menu-item index="1">&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;</el-menu-item>
-          <el-sub-menu index="2">
+          <el-sub-menu index="1">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
-            <el-menu-item index="2-1">OpenStreetMap</el-menu-item>
-            <el-menu-item index="2-2">Gaode Map (default)</el-menu-item>
-            <el-menu-item index="2-3">Tian Map</el-menu-item>
+            <el-menu-item index="1-1">OpenStreetMap</el-menu-item>
+            <el-menu-item index="1-2">Gaode Map (default)</el-menu-item>
+            <el-menu-item index="1-3">Tian Map</el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <el-menu-item index="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <!-- 滚动栏 -->
             <el-scrollbar v-if="filteredLocations.length && isFocused" style="height: 300px; width:300px; position: absolute; bottom: 50px; background-color: #545c64; color: white;">
               <ul>
@@ -82,8 +81,8 @@
                 </li>
               </ul>
             </el-scrollbar>
-            <el-input v-model="test" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur"></el-input>
-            <el-button style="margin-left: 10px;" type="primary" @click="getjw">Check</el-button>
+            <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
+            <el-button style="margin-left: 10px;" type="primary" @click="getjw">导航</el-button>
           </el-menu-item>
         </el-menu>
         <!-- 用户头像 -->
@@ -130,6 +129,88 @@
         <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
       </div>
     </el-drawer>  
+    <el-drawer 
+    v-model="drawer2" 
+    title="I am the title" 
+    style="overflow: auto;"
+    :before-close="handleClose"
+    >
+      <template #header>
+        <el-input v-model="scenery" 
+          placeholder="请输入感兴趣的地点"  
+          :prefix-icon="Search">
+        </el-input>
+            <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
+      </template>
+      <template #default>
+        <div class="spot-photo">
+        <div style="text-align: center;">
+          <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
+        </div>
+      </div>
+      <div>
+        <h3>Scenic Spot Name</h3>
+        <p>{{ name }}</p>
+      </div>
+      <div>
+        <h4>Introduction</h4>
+        <p>
+        <!-- Description of the scenic spot -->
+         {{ introduction }}
+        </p>
+      </div>
+      <div>
+        <h4>Location</h4>
+        <p>{{ city }}</p>
+      </div>
+      <div>
+        <h4>Opening Hours</h4>
+        <p>
+        Monday to Sunday: 9:00 AM - 6:00 PM
+        </p>
+      </div>
+      <div>
+        <h4>
+          Average Rate
+        </h4>
+        <el-rate
+        v-model="averagescore"
+        :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
+        show-text
+        disabled
+        score-template="{value} points"
+        />
+        <h4>Remarks</h4>
+        <p>{{ remarks1 }}</p>
+        <p>{{ remarks2 }}</p>
+        <p>{{ remarks3 }}</p>
+      </div> 
+      <h4>
+        Your Rate
+      </h4>
+      <div>
+        <el-rate
+        v-model="userscore"
+        :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
+        show-text
+        />
+        <h4>
+          Your Remark
+          <el-input
+            v-model="userrmk"
+            maxlength="30"
+            style="width: 240px; margin: 20px 0"
+            placeholder="Please input"
+            show-word-limit
+            type="text"
+          />
+          <el-button  type="primary">
+            Upload<el-icon class="el-icon--right"><Upload/></el-icon>
+          </el-button>
+        </h4>
+      </div>    
+      </template>
+    </el-drawer>
   </div>
 </template>
 
@@ -143,19 +224,38 @@ import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
 import { route } from '../jses/route';
 import axios from 'axios';
+import { Edit,ChatDotSquare,EditPen,Loading,Search } from '@element-plus/icons-vue';
 
 const store = useStore();
-const drawer = ref(false)
+const drawer = ref(false);
+const drawer2 = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
-const isCollapse = ref(true)
-const test = ref()
+const isCollapse = ref(false);
+const scenery = ref();
 const dialogVisible = ref(false)
 const userinfo = ref(false);
 const locations = ref([]);
-const jsonUrl = new URL('../resources/data.json', import.meta.url).href;
+const jsonUrl = new URL('../resources/data2.json', import.meta.url).href;
 const filteredLocations = ref([]);
 const isFocused = ref(false);
+const userscore = ref(0);
+const averagescore = ref(0);
+const userrmk = ref('');
+const name = ref();
+const introduction = ref();
+// const county = ref();
+const city = ref();
+const remarks1 = ref([])
+const remarks2 = ref([])
+const remarks3 = ref([])
+
+const tfdrawer2 = () => {
+  if(name != null) {
+    drawer2.value = true;
+  }
+}
+
 //获取数据
 const fetchData = async () => {
   try {
@@ -163,19 +263,19 @@ const fetchData = async () => {
     const decoder = new TextDecoder('gb2312');
     const text = decoder.decode(response.data); 
     locations.value = JSON.parse(text);
-    console.log(locations.value);
+    // console.log(locations.value);
   } catch (error) {
     console.error('Error fetching data:', error);
   }
 };
-
+//模糊查找
 const filterLocations = () => {
-  const query = test.value.toLowerCase();
+  const query = scenery.value.toLowerCase();
   filteredLocations.value = locations.value.filter(location => location.NAME.toLowerCase().includes(query));
 };
-
+//选择栏目
 const selectLocation = (location) => {
-  test.value = location.NAME;
+  scenery.value = location.NAME;
   filteredLocations.value = [];
   isFocused.value = false;
 };
@@ -186,9 +286,9 @@ const handleBlur = () => {
   }, 200);
 };
 
-//获取选中项目的经纬度
+//获取选中项目的经纬度以及各种信息
 const getjw = () => {
-  const item = locations.value.find(d => d.NAME === test.value);
+  const item = locations.value.find(d => d.NAME === scenery.value);
   if (item) {
     const coords = item.geometry.match(/POINT \((\d+\.\d+) (\d+\.\d+)\)/);
     if (coords) {
@@ -200,16 +300,29 @@ const getjw = () => {
     } else {
       console.error('Invalid geometry format');
     }
-  } else {
+    introduction.value = item.INTRODUCTION || '暂无信息';
+    name.value = item.NAME || '暂无信息';
+    city.value = item.CITY || '暂无信息';
+    averagescore.value = item.SCORE || '4'
+    remarks1.value = item.COMMENT[0] || '暂无信息';
+    remarks2.value = item.COMMENT[1] || '暂无信息';
+    remarks3.value = item.COMMENT[2] || '暂无信息';
+    // county.value = item.COUNTY || '暂无信息';
+  } 
+  else {
     console.error('Name not found');
   }
 };
 
+
+
 const deletejw =() => {
   store.commit('clearUser');
 }
+
 //直接挂载 节省查询时间
 onMounted(fetchData);
+
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
 // const toggle = () => {
@@ -229,7 +342,7 @@ onMounted(fetchData);
 
 <style>
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 300px;
+  width: 200px;
 }
 .flex-grow {
   flex-grow: 0;

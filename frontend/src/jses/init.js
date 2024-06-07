@@ -1,8 +1,18 @@
 //init.js
-import { getCurrentPosition } from './location.js';
-
+import { getCurrentPosition } from './location';
+import {
+  WebMercatorProjection,
+  WebMercatorTilingScheme,
+  Math as CesiumMath,
+  Cartographic,
+  Cartesian2,
+} from 'cesium';
+import CoordTransform from './CoordTransform';
+//全局变量viewer
 let viewer;
+//坐标转换
 
+//初始化cesium球
 async function init() {
   Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0Y2U5MWRhOC0zYzdhLTRjMGItODkwNC02NzVmNGFmMTBkOWEiLCJpZCI6MjA1MjM5LCJpYXQiOjE3MTE2ODUwMjF9.RRfIFU8B-huDx7VQOLeAmMabtoIcIkA1m2SRaRYopUI';
   viewer = new Cesium.Viewer('cesiumContainer', {
@@ -15,11 +25,19 @@ async function init() {
     selectionIndicator: false,
     navigationHelpButton: false,
     navigationInstructionsInitiallyVisible: false,
-    sceneMode: Cesium.SceneMode.SCENE3D
+    sceneMode: Cesium.SceneMode.SCENE3D,
   });
 
   viewer.sceneModePicker.viewModel.duration = 0.0;
-  viewer._cesiumWidget._creditContainer.style.display = "none";
+  viewer._cesiumWidget._creditContainer.style.display = 'none';
+
+const imageryProvider = new Cesium.UrlTemplateImageryProvider({
+  url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+  tilingScheme: new Cesium.WebMercatorTilingScheme(),
+});
+
+viewer.imageryLayers.addImageryProvider(imageryProvider);
+
 
   try {
     const position = await getCurrentPosition();
@@ -28,8 +46,8 @@ async function init() {
     setHomeView(position.longitude, position.latitude);
   } catch (error) {
     console.error('定位失败:', error.message);
-    setView(120.5, 29.5);
-    setHomeView(120.5, 29.5);
+    setView(120, 30);
+    setHomeView(120, 30);
   }
 }
 
@@ -37,28 +55,11 @@ function setView(longitude, latitude) {
   viewer.camera.setView({
     destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 5000),
     orientation: {
-      heading: Cesium.Math.toRadians(360),
-      pitch: Cesium.Math.toRadians(-90),
-      roll: Cesium.Math.toRadians(0)
-    }
+      heading: CesiumMath.toRadians(360),
+      pitch: CesiumMath.toRadians(-90),
+      roll: CesiumMath.toRadians(0),
+    },
   });
-
-  Cesium.CesiumTerrainProvider.fromIonAssetId(1, {
-    requestWaterMask: true,
-    requestVertexNormals: true,
-  }).then((terrainProvider) => {
-    viewer.terrainProvider = terrainProvider;
-  }).catch((e) => {
-    console.log(e);
-  });
-
-  var layer = new Cesium.UrlTemplateImageryProvider({
-    url: "http://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
-    minimumLevel: 4,
-    maximumLevel: 18
-  });
-
-  viewer.imageryLayers.addImageryProvider(layer);
 }
 
 function setHomeView(longitude, latitude) {
@@ -67,10 +68,10 @@ function setHomeView(longitude, latitude) {
     viewer.camera.flyTo({
       destination: Cesium.Cartesian3.fromDegrees(longitude, latitude, 5000),
       orientation: {
-        heading: Cesium.Math.toRadians(360),
-        pitch: Cesium.Math.toRadians(-90),
-        roll: Cesium.Math.toRadians(0)
-      }
+        heading: CesiumMath.toRadians(360),
+        pitch: CesiumMath.toRadians(-90),
+        roll: CesiumMath.toRadians(0),
+      },
     });
   });
 }
@@ -80,6 +81,5 @@ function getViewer() {
 }
 
 export {
-  init,
-  getViewer
+  getViewer,init
 }

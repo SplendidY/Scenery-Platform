@@ -3,14 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
     <link rel="stylesheet" href="./node_modules/cesium/Build/Cesium/Widgets/widgets.css">
     <title>Vite + Vue</title>
   </head>
   <body>
     <div id="app"></div>
+    <script type="text/javascript">
+      window._AMapSecurityConfig = {
+          securityJsCode:"6f58621e3b04d0078dce911ed6544b42",
+      };
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=bf8991e26f45b070382f8fafbb07d3d7&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
     <script type="module" src="/src/main.js"></script>
+    <script src="//unpkg.com/@element-plus/icons-vue"></script>
     <script src="./node_modules/cesium/Build/Cesium/Cesium.js"></script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=1780110dcac21ab0701cb693967a3e93"></script>
-  </body>
+  </body> 
 </html>

@@ -320,7 +320,7 @@ const uploaduserrmk = (userrmk) => {
 
 const deletejw =() => {
   store.commit('clearUser');
-}
+};
 
 //直接挂载 节省查询时间
 onMounted(fetchData);
@@ -340,6 +340,41 @@ onMounted(fetchData);
 //     });
 // };
 
+querySearch: (queryString, cb) => {
+  let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+  let results = queryString? searchHistory.filter(this.createFilter(queryString)) : searchHistory;
+  cb(results);
+};
+
+createFilter: (queryString) => {
+  return (history) => {
+    return (history.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+  };
+};
+
+handleSelect: (item) => {
+  this.scenery = item;
+};
+
+created: () => {
+  this.searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+};
+
+methods: {
+  querySearch: (queryString, cb) => {
+    let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    let results = queryString? searchHistory.filter(this.createFilter(queryString)) : searchHistory;
+    cb(results);
+  };
+  createFilter: (queryString) => {
+    return (history) => {
+      return (history.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+    };
+  };
+  handleSelect: (item) => {
+    this.scenery = item;
+  }
+}
 </script>
 
 <style>
@@ -368,4 +403,13 @@ html, body {
   cursor: pointer;
   border-radius: 50%;
 }
+
+.auto-complete-history .el-autocomplete-suggestion__wrap {
+  max-height: 300px; /* 定义最大高度 */
+}
+
+.auto-complete-history .el-autocomplete-suggestion {
+  max-height: none; /* 取消内部元素的最大高度限制 */
+}
+
 </style>

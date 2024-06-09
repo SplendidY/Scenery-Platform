@@ -60,8 +60,13 @@
           <div class="flex-grow" />
           <el-sub-menu index="1">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
-            <el-menu-item index="1-1">OpenStreetMap</el-menu-item>
-            <el-menu-item index="1-2">Gaode Map (default)</el-menu-item>
+            <el-sub-menu index="1-1">
+              <template #title>OpenStreetMap</template>
+              <el-menu-item index="1-1-1" @click="SwitchLayer('1-1-1')">tile.openstreetmap(default)</el-menu-item>
+              <el-menu-item index="1-1-2" @click="SwitchLayer('1-1-2')">dark_all</el-menu-item>
+              <el-menu-item index="1-1-3" @click="SwitchLayer('1-1-3')">light_all</el-menu-item>
+            </el-sub-menu>
+            <el-menu-item index="1-2">Gaode Map</el-menu-item>
             <el-menu-item index="1-3">Tian Map</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

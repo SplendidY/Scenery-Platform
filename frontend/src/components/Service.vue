@@ -66,13 +66,7 @@
           style="width: 100%; margin: 0; border: none;height: 60px;"
         >
           <div class="flex-grow" />
-         <el-menu-item index="1">&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-input v-model="test"             
-            :prefix-icon="Search">
-            </el-input>
-            <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
-          </el-menu-item>
-          <el-sub-menu index="2">
+          <el-sub-menu index="1">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
             <el-menu-item index="1-1">OpenStreetMap</el-menu-item>
             <el-menu-item index="1-2">Gaode Map (default)</el-menu-item>
@@ -89,8 +83,6 @@
             </el-scrollbar>
             <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
             <el-button style="margin-left: 10px;" type="primary" @click="getjw">导航</el-button>
-          <el-menu-item index="3">
-            <el-button type="primary" :icon="Search" @click="drawer2=true">Search</el-button>
           </el-menu-item>
         </el-menu>
         <!-- 用户头像 -->
@@ -137,7 +129,6 @@
         <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
       </div>
     </el-drawer>  
-
     <el-drawer 
     v-model="drawer2" 
     title="I am the title" 
@@ -171,7 +162,6 @@
       <div>
         <h4>Location</h4>
         <p>{{ city }}</p>
-        <p>{{ location }}</p>
       </div>
       <div>
         <h4>Opening Hours</h4>
@@ -225,18 +215,10 @@
 </template>
 
 
-<script lang="ts" setup>
-import {
-  Calendar,
-  Check,
-  Delete,
-  Edit,
-  Message,
-  Search,
-  Star,
-  Upload,
-} from '@element-plus/icons-vue'
-import { ref,computed, onMounted} from 'vue'
+<script setup>
+import { ref,computed,onMounted } from 'vue'
+// import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+// import en from 'element-plus/dist/locaFle/en.mjs'
 import Cesium from './Cesium.vue'
 import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
@@ -338,46 +320,26 @@ const uploaduserrmk = (userrmk) => {
 
 const deletejw =() => {
   store.commit('clearUser');
-};
+}
 
 //直接挂载 节省查询时间
 onMounted(fetchData);
 
-querySearch: (queryString, cb) => {
-  let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-  let results = queryString? searchHistory.filter(this.createFilter(queryString)) : searchHistory;
-  cb(results);
-};
+// const language = ref('zh-cn')
+// const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
+// const toggle = () => {
+//   language.value = language.value === 'zh-cn' ? 'en' : 'zh-cn'
+// // }
+// const handleClose = (done) => {
+//   ElMessageBox.confirm('Are you sure to close this dialog?')
+//     .then(() => {
+//       done();
+//     })
+//     .catch(() => {
+//       // catch error
+//     });
+// };
 
-createFilter: (queryString) => {
-  return (history) => {
-    return (history.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-  };
-};
-
-handleSelect: (item) => {
-  this.scenery = item;
-};
-
-created: () => {
-  this.searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-};
-
-methods: {
-  querySearch: (queryString, cb) => {
-    let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    let results = queryString? searchHistory.filter(this.createFilter(queryString)) : searchHistory;
-    cb(results);
-  };
-  createFilter: (queryString) => {
-    return (history) => {
-      return (history.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-    };
-  };
-  handleSelect: (item) => {
-    this.scenery = item;
-  }
-}
 </script>
 
 <style>
@@ -406,13 +368,4 @@ html, body {
   cursor: pointer;
   border-radius: 50%;
 }
-
-.auto-complete-history .el-autocomplete-suggestion__wrap {
-  max-height: 300px; /* 定义最大高度 */
-}
-
-.auto-complete-history .el-autocomplete-suggestion {
-  max-height: none; /* 取消内部元素的最大高度限制 */
-}
-
 </style>

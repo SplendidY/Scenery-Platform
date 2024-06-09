@@ -9,13 +9,13 @@
 import { onBeforeMount, onMounted } from 'vue';
 import { init,getViewer } from '../jses/init'
 import { route } from '../jses/route'
+
 onBeforeMount(() => {
   console.log('a');
 });
 
 onMounted(() => {
   init();
-  route();
 });
 
 </script>

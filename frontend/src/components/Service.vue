@@ -314,19 +314,13 @@ const getjw = () => {
   }
 };
 
-const submitComment = () => {
-  console.log(userrmk.value);
-  uploaduserrmk(userrmk.value);
-};
-
-const uploaduserrmk = async (userrmk) => {
-  console.log(userrmk)
+const submitComment = async () => {
   try {
     // 找到相应的位置
     const item = locations.value.find(d => d.NAME === scenery.value);
     if (item) {
       // 将新的评论插入到第一个位置
-      item.COMMENT.unshift(userrmk);
+      item.COMMENT.unshift(userrmk.value);
 
       // 发送更新后的数据到后端
       const response = await axios.post('http://localhost:5001/update-location', locations.value, {

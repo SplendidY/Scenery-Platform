@@ -31,9 +31,9 @@
           <el-menu-item index="1-4-1">item one</el-menu-item>
         </el-sub-menu>
       </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon><icon-menu /></el-icon>
-        <template #title>Navigator Two</template>
+      <el-menu-item index="2" @click="toggleDrawPolygon">
+      <el-icon><icon-menu /></el-icon>
+      <template #title>测算旅游指数评分</template>
       </el-menu-item>
       <el-menu-item index="3">
         <el-icon><document /></el-icon>
@@ -160,6 +160,25 @@ const userinfo = ref(false);
 //     });
 // };
 
+</script>
+
+<script>
+import { stratDrawing } from '../jses/init.js';
+let isDrawingActive = 1;
+
+function toggleDrawPolygon() {
+  //isDrawingActive.value = !isDrawingActive.value;
+  isDrawingActive = -isDrawingActive;
+}
+
+export function isDrawing(){
+  console.log(isDrawingActive);
+  if(isDrawingActive==1){
+    stratDrawing()
+  }else{
+    endDrawing()
+  }
+}
 </script>
 
 <style>

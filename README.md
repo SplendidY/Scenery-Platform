@@ -42,4 +42,4 @@ npm run dev
 经过好多好多次尝试  
 在冲突的时候会出现一个让你修改的界面（vscode）  
 然后就根据显示的修改冲突就好  
-然后再次git add/commit/push就好啦！！！  
+然后再次git add/commit/push就好啦lalalalala！！！  

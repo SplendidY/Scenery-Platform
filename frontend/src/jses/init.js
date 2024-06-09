@@ -1,6 +1,6 @@
 //init.js
 import { getCurrentPosition } from './location.js';
-
+import { isDrawing } from '../components/Service.vue';
 let viewer;
 
 async function init() {
@@ -31,6 +31,84 @@ async function init() {
     setView(120.5, 29.5);
     setHomeView(120.5, 29.5);
   }
+   addClickHandler();
+ }
+
+let pointsArray = [];
+let polyline = undefined;
+
+function addClickHandler() {
+  isDrawing()}
+
+export function stratDrawing(){
+  const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+  
+  // 处理左键点击，继续添加点
+  handler.setInputAction((movement) => {
+    isDrawing()
+      const cartesian = viewer.camera.pickEllipsoid(movement.position);
+      if (cartesian) {
+          addPoint(cartesian);
+      }
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+  // 处理右键点击，结束多边形的绘制
+  handler.setInputAction(() => {
+      endDrawing(handler);
+  }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+
+}
+
+  
+  function addPoint(cartesian) {
+    viewer.entities.add({
+        position: cartesian,
+        point: {
+            pixelSize: 10,
+            color: Cesium.Color.RED
+        }
+    });
+    pointsArray.push(cartesian);
+    updateShape();
+}
+
+function updateShape() {
+  if (pointsArray.length === 2) {
+      // 有两个点时，绘制线
+      polyline = viewer.entities.add({
+          polyline: {
+              positions: pointsArray,
+              width: 5,
+              material: Cesium.Color.RED
+          }
+      });
+  } else if (pointsArray.length > 2) {
+      // 更新多边形或线
+      if (polyline) {
+          viewer.entities.remove(polyline);
+      }
+      polyline = viewer.entities.add({
+          polyline: {
+              positions: pointsArray.concat([pointsArray[0]]), // 闭合多边形
+              width: 5,
+              material: Cesium.Color.RED
+          }
+      });
+  }
+}
+
+ export function endDrawing(handler) {
+  if (polyline) {
+      viewer.entities.add({
+          polygon: {
+              hierarchy: new Cesium.PolygonHierarchy(pointsArray),
+              material: Cesium.Color.YELLOW.withAlpha(0.7)
+          }
+      });
+      viewer.entities.remove(polyline); // 移除临时线条
+  }
+  handler.destroy(); // 移除事件监听，结束绘制
+  pointsArray = []; // 可选：清空点数组，准备下一次绘制
 }
 
 function setView(longitude, latitude) {

@@ -1,5 +1,7 @@
 <template>
+  <!-- 整个div -->
   <div style="height: 100vh; display: flex; flex-direction: column; overflow: hidden;">
+    <!-- 左上角显隐栏 -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
       <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
         <el-radio-button :value="false">expand</el-radio-button>
@@ -13,43 +15,35 @@
       style="position: absolute; top: 60px; left: 20px; z-index: 998;"
       @select="handleSelect1"
     >
-      <el-sub-menu index="1">
-        <template #title>
-          <el-icon><location /></el-icon>
-          <span>Navigator One</span>
-        </template>
-        <el-menu-item-group>
-          <template #title><span>Group One</span></template>
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
-        </el-sub-menu>
-      </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon><icon-menu /></el-icon>
-        <template #title>Navigator Two</template>
+    <el-menu-item index="1" >
+        <template #title>one</template>
       </el-menu-item>
-      <el-menu-item index="3">
-        <el-icon><document /></el-icon>
-        <template #title>Navigator Three</template>
+      <el-menu-item index="2" @click="tfdrawer4">
+        <el-icon><Opportunity/></el-icon>
+        <template #title>个性化推荐</template>
+      </el-menu-item>
+      <el-menu-item index="3" @click="tfdrawer2">
+        <el-icon><ChatDotSquare /></el-icon>
+        <template #title>景点信息</template>
       </el-menu-item>
       <el-menu-item index="4">
-        <el-icon><setting /></el-icon>
-        <template #title>Navigator Four</template>
+        <el-icon><EditPen /></el-icon>
+        <template #title>旅游指数综合打分</template>
+      </el-menu-item>
+      <el-menu-item index="5" @click="tfdrawer3">
+        <el-icon><Star /></el-icon>
+        <template #title>我的收藏</template>
       </el-menu-item>
     </el-menu>
+    <!-- 整体 -->
     <el-container style="flex: 1; display: flex; flex-direction: column;">
+      <!-- Ceisum球 -->
       <el-main style="flex: 1; position: relative;">
         <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
           <Cesium />
         </div>
       </el-main>
+      <!-- 底部栏 -->
       <el-footer style="padding: 0; width: 100%;">
         <el-menu
           active-text-color="#ffd04b"
@@ -61,49 +55,48 @@
           style="width: 100%; margin: 0; border: none;height: 60px;"
         >
           <div class="flex-grow" />
-         <el-menu-item index="1">&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-input v-model="searchText" 
-            placeholder="请输入感兴趣的地点" 
-            :prefix-icon="Search">
-            </el-input>
-            <!-- Updated the click event to also add search history -->
-            <el-button style="margin-left: 10px;" type="primary" @click="addSearchHistory, drawer2 = true">Check</el-button>
-          </el-menu-item>
-          <el-sub-menu index="2">
+          <el-sub-menu index="1">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
-            <el-menu-item index="2-1">OpenStreetMap</el-menu-item>
-            <el-menu-item index="2-2">Gaode Map (default)</el-menu-item>
-            <el-menu-item index="2-3">Tian Map</el-menu-item>
-            <el-sub-menu index="2-4">
-              <template #title>layer4</template>
-              <el-menu-item index="2-4-1">Layer4-1</el-menu-item>
-              <el-menu-item index="2-4-2">Layer4-2</el-menu-item>
-              <el-menu-item index="2-4-3">Layer4-3</el-menu-item>
-            </el-sub-menu>
+            <el-menu-item index="1-1">OpenStreetMap</el-menu-item>
+            <el-menu-item index="1-2">Gaode Map (default)</el-menu-item>
+            <el-menu-item index="1-3">Tian Map</el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="3">&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;</el-menu-item>
+          <el-menu-item index="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <!-- 滚动栏 -->
+            <el-scrollbar v-if="filteredLocations.length && isFocused" style="height: 300px; width:300px; position: absolute; bottom: 50px; background-color: #545c64; color: white;">
+              <ul>
+                <li v-for="location in filteredLocations" :key="location.NAME" @click="selectLocation(location)" style="padding: 8px; cursor: pointer;">
+                  {{ location.NAME }}
+                </li>
+              </ul>
+            </el-scrollbar>
+            <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
+            <el-button style="margin-left: 10px;" type="primary" @click="getjw">导航</el-button>
+          </el-menu-item>
         </el-menu>
+        <!-- 用户头像 -->
         <div style="position: absolute;right: 3%;bottom: 1.5%;">
-            <el-button class="avatar-button" @click="drawer1 = true">
+            <el-button class="avatar-button" @click="drawer = true">
               <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
             </el-button>
             <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 30px; font-size: 16px;">log out</el-button>
         </div>
       </el-footer>
     </el-container>
+    <!-- 退出按钮 -->
     <el-dialog v-model="dialogVisible" title="Sure ?" width="500">
       <span>Sure to log out ?</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">No</el-button>
           <router-link to="/login">
-            <el-button type="primary" style="margin-left: 10px;" @click="dialogVisible = false">
+            <el-button type="primary" style="margin-left: 10px;" @click="dialogVisible = false;deletejw()">
               Sure
             </el-button>
           </router-link>
         </div>
-        
       </template>
+    <!-- 信息栏 -->
     </el-dialog>
     <el-descriptions
       v-show="userinfo"
@@ -114,105 +107,53 @@
       style="position: absolute;right:1%;bottom: 20%;width: 25%;background-color: aliceblue;z-index: 10; border: 1px solid #ebeef5; border-radius: 4px; padding: 20px;"
       border
     >
-      <el-descriptions-item label="Username">{{ username }}</el-descriptions-item>
-      <el-descriptions-item label="Password">{{ password }}</el-descriptions-item>
+      <el-descriptions-item label="Username">{{ store.state.username }}</el-descriptions-item>
+      <el-descriptions-item label="Password">{{ this.$store.state.password }}</el-descriptions-item>
       <el-descriptions-item label="Place" :span="2">Hangzhou</el-descriptions-item>
-      <!-- <el-descriptions-item label="Remarks">
-        <el-tag size="small">School</el-tag>
-      </el-descriptions-item>
-      <el-descriptions-item label="Address">
-        No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province
-      </el-descriptions-item> -->
     </el-descriptions>
-    <el-drawer v-model="drawer1" title="I am the title" :with-header="false" size="11%">
+    <!-- 侧边栏 -->
+    <el-drawer v-model="drawer" title="I am the title" :with-header="false" size="11%">
       <div style="display: flex;align-items: center;">
         <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
         <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
       </div>
-      <div>
-          <!--menu to user -->
-          <el-menu
-            box-shadow="none"
-            active-text-color="#003366"
-            background-color="#ffffff"
-            class="el-menu-vertical-demo"
-            default-active="2"
-            text-color="#708090"
-            @open="handleOpen"
-            @close="handleClose"
-            @select="handleSelect"
-          >
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon><location /></el-icon>                           
-              <span>个人信息</span>
-            </template>
-            <el-menu-item-group title="Group One">
-              <el-menu-item index="1-1">item one</el-menu-item>
-              <el-menu-item index="1-2">item two</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="Group Two">
-              <el-menu-item index="1-3">item three</el-menu-item>
-            </el-menu-item-group>
-            <el-sub-menu index="1-4">
-              <template #title>item four</template>
-                <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
-            </el-sub-menu>
-            <el-menu-item index="2">
-              <el-icon><icon-menu /></el-icon>
-              <span>我的收藏</span>
-              </el-menu-item>
-              <el-menu-item index="3" @click="fetchSearchHistory">
-              <el-icon><document /></el-icon>
-                <span>历史记录</span>
-              </el-menu-item>
-              <el-menu-item index="4">
-              <el-icon><setting /></el-icon>
-              <span>设置</span>
-              </el-menu-item>
-          </el-menu>
-        </div>
-  </el-drawer>
-  <!-- Presentation history -->
-  <el-card style="max-width: 300px" v-if="showLeftDiv" class="right-top-div">
-    <template #header>历史搜索记录
-      <el-button type="primary" :icon="CloseBold" class="close" @click="hidecard"/>
-    </template>
-    <el-scrollbar height="225px">
-      <p v-for="(item, index) in searchHistory.value" :key="index" class="scrollbar-demo-item">{{ item }}</p>
-    </el-scrollbar>
-    <template #footer >
-      <el-button type="primary" style="height: 30px">清空所有记录</el-button>
-    </template>
-  </el-card>
-  
+    </el-drawer>  
     <el-drawer 
     v-model="drawer2" 
     title="I am the title" 
-    :with-header="false"
     style="overflow: auto;"
+    :before-close="handleClose"
     >
-      <div class="spot-photo">
-        <div style="text-align: center;">
-          <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
+      <template #header>
+        <el-input v-model="scenery" 
+          placeholder="请输入感兴趣的地点"  
+          :prefix-icon="Search">
+        </el-input>
+        <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
+      </template>
+      <template #default>
+        <div class="spot-photo">
+          <div style="text-align: center;">
+            <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
+          </div>
         </div>
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+              <h3>Scenic Spot Name</h3>
+              <p>{{ name }}</p>
+          </div>
+            <el-button class="star" type="warning" :icon="Star" circle @click="addFavorite(name)" style="align-self: center"></el-button>          
       </div>
       <div>
-        <h3>Scenic Spot Name</h3>
-        <p>{{ searchText }}</p>
-      </div>
-      <div>
+        <h4>Introduction</h4>
         <p>
         <!-- Description of the scenic spot -->
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod convallis faucibus. Sed lacinia, nunc auctor dignissim tempor, lorem enim cursus ante, non suscipit velit orci sit amet metus.
+         {{ introduction }}
         </p>
       </div>
       <div>
         <h4>Location</h4>
-        <p>
-        Hangzhou, China
-        </p>
+        <p>{{ city }}</p>
       </div>
       <div>
         <h4>Opening Hours</h4>
@@ -221,22 +162,32 @@
         </p>
       </div>
       <div>
+        <h4>
+          Average Rate
+        </h4>
+        <el-rate
+        v-model="averagescore"
+        :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
+        show-text
+        disabled
+        score-template="{value} points"
+        />
         <h4>Remarks</h4>
-        <p>
-        AG: good place, never come again.
-        </p>
+        <p>{{ remarks1 }}</p>
+        <p>{{ remarks2 }}</p>
+        <p>{{ remarks3 }}</p>
       </div> 
       <h4>
-        Your rate
+        Your Rate
       </h4>
       <div>
         <el-rate
-        v-model="value"
+        v-model="userscore"
         :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
         show-text
         />
         <h4>
-          Your Remarks
+          Your Remark
           <el-input
             v-model="userrmk"
             maxlength="30"
@@ -245,133 +196,204 @@
             show-word-limit
             type="text"
           />
-          <el-button type="success" :icon="Check" circle />
+          <el-button  type="primary" style="position: relative; left:10px;">
+            Upload<el-icon class="el-icon--right" @click="uploaduserrmk"><Upload/></el-icon>
+          </el-button>
         </h4>
-      </div>    
+      </div>  
+      </template>
+    </el-drawer>
+    <!--collection-->
+    <el-drawer 
+      v-model="drawer3" 
+      title="我的收藏" 
+      style="overflow: auto;"
+      :before-close="handleClose"
+    >
+     <el-scrollbar height="400px">
+      <template v-if="favorites.length > 0">
+        <div v-for="(favorite, index) in favorites" :key="index" class="scrollbar-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ebeef5;">
+          <p style="margin: 0;">{{ favorite }}</p>
+          <el-button type="primary" :icon="CloseBold" @click="removeFavorite(index)">取消收藏</el-button>
+        </div>
+      </template>
+      <template v-else>
+        <div class="empty-favorites">暂无收藏地点</div>
+      </template>
+    </el-scrollbar>
+    </el-drawer>
+
+    <el-drawer 
+    v-model="drawer4" 
+    title="个性化推荐" 
+    style="overflow: auto;"
+    :before-close="handleClose"
+    >
+    
     </el-drawer>
   </div>
 </template>
 
 
-<script lang="ts" setup>
-import {
-  Calendar,
-  Check,
-  Delete,
-  Edit,
-  Message,
-  Search,
-  Star,
-  CloseBold,
-} from '@element-plus/icons-vue'
-import { ref,computed} from 'vue'
+<script setup>
+import { ref,computed,onMounted} from 'vue'
+// import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+// import en from 'element-plus/dist/locaFle/en.mjs'
 import Cesium from './Cesium.vue'
 import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
-import axios from 'axios';  // Ensure axios is installed or import it in your project
-import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
+import { route } from '../jses/route';
+import axios from 'axios';
+import { Edit,ChatDotSquare,EditPen,Loading,Search,Upload,Star, Opportunity ,CloseBold} from '@element-plus/icons-vue';
 
-const searchText = ref('');  // Used for binding to the search input
-const searchHistory = ref([]);  // To store and display the search history
 const store = useStore();
-const drawer = ref(false) // 是ysq添加的，因为前面的有一处@click=drawer有bug
-const drawer1 = ref(false)
-const drawer2 = ref(false)
+const drawer = ref(false);
+const drawer2 = ref(false);
+const drawer3 = ref(false);
+const drawer4 = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
-const isCollapse = ref(true)
-const test = ref()
+const isCollapse = ref(false);
+const scenery = ref();
 const dialogVisible = ref(false)
 const userinfo = ref(false);
-const value = ref();
-const userrmk = ref('')
-const size = 'edium';
-const router = useRouter();
-const showLeftDiv = ref(false);
+const locations = ref([]);
+const jsonUrl = new URL('../resources/data2.json', import.meta.url).href;
+const filteredLocations = ref([]);
+const isFocused = ref(false);
+const userscore = ref(0);
+const averagescore = ref(0);
+const userrmk = ref('');
+const name = ref();
+const introduction = ref();
+// const county = ref();
+const city = ref();
+const remarks1 = ref([])
+const remarks2 = ref([])
+const remarks3 = ref([])
+const favorites = ref([]); 
 
-const hidecard = () => {
-  showLeftDiv.value = false;
-};
+const tfdrawer2 = () => {
+  if(name != null) {
+    drawer2.value = true;
+  }
+}
+const tfdrawer3 = () => {
+  if(name != null) {
+    drawer3.value = true;
+  }
+}
 
+const tfdrawer4 = () => {
+  if(name != null) {
+    drawer4.value = true;
+  }
+}
 
-//Click Events in the right-hand menu
-const handleSelect = (index) => {
-  if (index === '2') {
-    router.push('/user');
-  } else if (index === '3') {
-    showLeftDiv.value = true;
-    drawer1.value=false;
+//添加到收藏数组
+const addFavorite = (spotName) => {
+  if (!favorites.value.includes(spotName)) {
+    favorites.value.push(spotName);
+    console.log(favorites.value); 
   }
 };
-
-// method to handle menu item selection
-const handleSelect1 = (key: string, keyPath: Array<string>) => {
-  console.log('Selected menu item:', key, keyPath);
+//取消收藏
+const removeFavorite = (index) => {
+    favorites.value.splice(index, 1);
+ 
 };
 
-// method to add search history
-const addSearchHistory = async () => {
-  if (searchText.value.trim() !== '') {
-    console.log("Sending POST request with:", store.state.userId, searchText.value);
-    try {
-      const response = await fetch('http://localhost:5001/add_search_history', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          user_id: store.state.userId,
-          search_text: searchText.value
-        })
-      });
-      store.commit('addSearchHistory', searchText.value);
-      const data = await response.json();
-      console.log("Response received:", data);
-      if (response.ok) {
-        console.log('Search history added successfully:', data.message);
-        fetchSearchHistory();  // 重新获取搜索历史以更新列表
-      } else {
-        console.error('Failed to add search history:', data.message);
-        ElMessage.error({message: `Failed to add search history: ${data.message}`, showClose: true});
-      }
-    } catch (error) {
-      console.error('Error adding search history:', error);
-      ElMessage.error({message: 'Network errors or server unresponsiveness', showClose: true});
-    }
-  }
-};
 
-// method to fetch search history
-const fetchSearchHistory = async () => {
+//获取数据
+const fetchData = async () => {
   try {
-    const response = await fetch(`http://localhost:5001/api/search_history?user_id=${store.state.userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const data = await response.json();
-    if (response.ok) {
-      searchHistory.value = data;  // Assuming API returns an array of history
-      console.log(searchHistory.value);
-    } else {
-      console.error('Failed to fetch search history:', data.message);
-      ElMessage.error({message: `Failed to fetch search history: ${data.message}`, showClose: true});
-    }
+    const response = await axios.get(jsonUrl, { responseType: 'arraybuffer' });
+    const decoder = new TextDecoder('gb2312');
+    const text = decoder.decode(response.data); 
+    locations.value = JSON.parse(text);
+    // console.log(locations.value);
   } catch (error) {
-    console.error('Error fetching search history:', error);
-    ElMessage.error({message: 'Network errors or server unresponsiveness', showClose: true});
+    console.error('Error fetching data:', error);
+  }
+};
+//模糊查找
+const filterLocations = () => {
+  const query = scenery.value.toLowerCase();
+  filteredLocations.value = locations.value.filter(location => location.NAME.toLowerCase().includes(query));
+};
+//选择栏目
+const selectLocation = (location) => {
+  scenery.value = location.NAME;
+  filteredLocations.value = [];
+  isFocused.value = false;
+};
+
+const handleBlur = () => {
+  setTimeout(() => {
+    isFocused.value = false;
+  }, 200);
+};
+
+//获取选中项目的经纬度以及各种信息
+const getjw = () => {
+  const item = locations.value.find(d => d.NAME === scenery.value);
+  if (item) {
+    const coords = item.geometry.match(/POINT \((\d+\.\d+) (\d+\.\d+)\)/);
+    if (coords) {
+      const endj = parseFloat(coords[1]);
+      const endw = parseFloat(coords[2]);
+      store.commit('setendj', endj);
+      store.commit('setendw', endw);
+      route();
+    } else {
+      console.error('Invalid geometry format');
+    }
+    introduction.value = item.INTRODUCTION || '暂无信息';
+    name.value = item.NAME || '暂无信息';
+    city.value = item.CITY || '暂无信息';
+    averagescore.value = item.SCORE || '4'
+    remarks1.value = item.COMMENT[0] || '暂无信息';
+    remarks2.value = item.COMMENT[1] || '暂无信息';
+    remarks3.value = item.COMMENT[2] || '暂无信息';
+    // county.value = item.COUNTY || '暂无信息';
+  } 
+  else {
+    console.error('Name not found');
   }
 };
 
+const uploaduserrmk = (userrmk) => {
+  //发送修改文件请求至后端
+};
+
+const deletejw =() => {
+  store.commit('clearUser');
+}
+
+//直接挂载 节省查询时间
+onMounted(fetchData);
+
+// const language = ref('zh-cn')
+// const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
+// const toggle = () => {
+//   language.value = language.value === 'zh-cn' ? 'en' : 'zh-cn'
+// // }
+// const handleClose = (done) => {
+//   ElMessageBox.confirm('Are you sure to close this dialog?')
+//     .then(() => {
+//       done();
+//     })
+//     .catch(() => {
+//       // catch error
+//     });
+// };
 
 
 </script>
 
 <style>
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 300px;
+  width: 200px;
 }
 .flex-grow {
   flex-grow: 0;
@@ -396,30 +418,14 @@ html, body {
   border-radius: 50%;
 }
 
-.right-top-div {
-  position: absolute;
-  top: 150px;
-  right: 10px;
-  width: 300px; 
-  height: 400px; 
-  background-color: white; 
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-.close{
-  float: right;
-  height: 20px;
-  width: 10px;
-}
-.scrollbar-demo-item {
+.scrollbar-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
+  height: 35px;
   margin: 10px;
-  text-align: center;
   border-radius: 4px;
   background: var(--el-color-primary-light-9);
-  color: var(--el-color-primary);
+  ;
 }
 </style>

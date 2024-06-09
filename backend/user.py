@@ -53,8 +53,6 @@ def update_location():
         data = request.json
         if not data:
             return jsonify({'error': 'No data provided'}), 400
-
-        # 检查路径是否存在，不存在则创建
         import os
         os.makedirs(os.path.dirname(json_file_path), exist_ok=True)
         
@@ -63,7 +61,6 @@ def update_location():
         
         return jsonify({'message': 'Updated successfully'})
     except Exception as e:
-        # 打印详细的错误信息以便调试
         print(f'Error updating location: {str(e)}')
         return jsonify({'error': str(e)}), 500
 

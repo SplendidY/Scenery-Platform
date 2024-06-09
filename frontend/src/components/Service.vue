@@ -119,7 +119,7 @@
       border
     >
       <el-descriptions-item label="Username">{{ store.state.username }}</el-descriptions-item>
-      <el-descriptions-item label="Password">{{ this.$store.state.password }}</el-descriptions-item>
+      <el-descriptions-item label="Password">{{ store.state.password }}</el-descriptions-item>
       <el-descriptions-item label="Place" :span="2">Hangzhou</el-descriptions-item>
     </el-descriptions>
     <!-- 侧边栏 -->
@@ -205,7 +205,7 @@
             type="text"
           />
           <el-button  type="primary" style="position: relative; left:10px;">
-            Upload<el-icon class="el-icon--right" @click="uploaduserrmk"><Upload/></el-icon>
+            Upload<el-icon class="el-icon--right" @click="submitComment"><Upload/></el-icon>
           </el-button>
         </h4>
       </div>    
@@ -251,7 +251,7 @@ const remarks2 = ref([])
 const remarks3 = ref([])
 
 const tfdrawer2 = () => {
-  if(name != null) {
+  if( name.value != null) {
     drawer2.value = true;
   }
 }
@@ -314,8 +314,41 @@ const getjw = () => {
   }
 };
 
-const uploaduserrmk = (userrmk) => {
-  //发送修改文件请求至后端
+const submitComment = () => {
+  console.log(userrmk.value);
+  uploaduserrmk(userrmk.value);
+};
+
+const uploaduserrmk = async (userrmk) => {
+  console.log(userrmk)
+  try {
+    // 找到相应的位置
+    const item = locations.value.find(d => d.NAME === scenery.value);
+    if (item) {
+      // 将新的评论插入到第一个位置
+      item.COMMENT.unshift(userrmk);
+
+      // 发送更新后的数据到后端
+      const response = await axios.post('http://localhost:5001/update-location', locations.value, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.message === 'Updated successfully') {
+        console.log('评论已更新');
+        remarks1.value = item.COMMENT[0] || '暂无信息';
+        remarks2.value = item.COMMENT[1] || '暂无信息';
+        remarks3.value = item.COMMENT[2] || '暂无信息';
+      } else {
+        console.error('更新评论时出错:', response.data.error);
+      }
+    } else {
+      console.error('景点未找到');
+    }
+  } catch (error) {
+    console.error('更新评论时出错:', error);
+  }
 };
 
 const deletejw =() => {

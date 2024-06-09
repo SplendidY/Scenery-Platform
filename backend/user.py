@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import os
 from flask_jwt_extended import JWTManager, create_access_token
+import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # 允许所有域名访问
@@ -11,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
+json_file_path = '../frontend/src/resources/data2.json'
 
 # 定义用户数据列表
 class User(db.Model):
@@ -100,6 +102,22 @@ def add_favorite_attraction():
     db.session.add(favorite_attraction)
     db.session.commit()
     return jsonify({'message': 'Attraction added to favorites successfully'}), 201
+@app.route('/update-location', methods=['POST'])
+def update_location():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        import os
+        os.makedirs(os.path.dirname(json_file_path), exist_ok=True)
+        
+        with open(json_file_path, 'w', encoding='gb2312') as file:
+            json.dump(data, file, ensure_ascii=False, indent=2)
+        
+        return jsonify({'message': 'Updated successfully'})
+    except Exception as e:
+        print(f'Error updating location: {str(e)}')
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     setup_database()

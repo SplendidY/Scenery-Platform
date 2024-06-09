@@ -38,7 +38,6 @@ const imageryProvider = new Cesium.UrlTemplateImageryProvider({
 
 viewer.imageryLayers.addImageryProvider(imageryProvider);
 
-
   try {
     const position = await getCurrentPosition();
     console.log('定位成功:', position);

@@ -31,7 +31,7 @@ async function init() {
   viewer._cesiumWidget._creditContainer.style.display = 'none';
 
   const imageryProvider = new Cesium.UrlTemplateImageryProvider({
-    url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
+    url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
     tilingScheme: new Cesium.WebMercatorTilingScheme(),
   });
   viewer.imageryLayers.addImageryProvider(imageryProvider);

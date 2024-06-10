@@ -20,22 +20,10 @@
           <el-icon><Edit /></el-icon>
           <span>Navigator One</span>
         </template>
-        <el-menu-item-group>
-          <template #title><span>Group One</span></template>
-          <el-menu-item index="1-1">item one</el-menu-item>
-          <el-menu-item index="1-2">item two</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="Group Two">
-          <el-menu-item index="1-3">item three</el-menu-item>
-        </el-menu-item-group>
-        <el-sub-menu index="1-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="1-4-1">item one</el-menu-item>
-        </el-sub-menu>
       </el-sub-menu>
-      <el-menu-item index="2">
-        <el-icon><Loading /></el-icon>
-        <template #title>Navigator Two</template>
+      <el-menu-item index="2" @click="tfdrawer4">
+        <el-icon><Opportunity /></el-icon>
+        <template #title>个性化推荐</template>
       </el-menu-item>
       <el-menu-item index="3" @click="tfdrawer2">
         <el-icon><ChatDotSquare /></el-icon>
@@ -44,6 +32,10 @@
       <el-menu-item index="4">
         <el-icon><EditPen /></el-icon>
         <template #title>旅游指数综合打分</template>
+      </el-menu-item>
+      <el-menu-item index="5" @click="tfdrawer3">
+        <el-icon><Star /></el-icon>
+        <template #title>我的收藏</template>
       </el-menu-item>
     </el-menu>
     <!-- 整体 -->
@@ -68,8 +60,13 @@
           <div class="flex-grow" />
           <el-sub-menu index="1">
             <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
-            <el-menu-item index="1-1">OpenStreetMap</el-menu-item>
-            <el-menu-item index="1-2">Gaode Map (default)</el-menu-item>
+            <el-sub-menu index="1-1">
+              <template #title>OpenStreetMap</template>
+              <el-menu-item index="1-1-1" @click="SwitchLayer('1-1-1')">tile.openstreetmap(default)</el-menu-item>
+              <el-menu-item index="1-1-2" @click="SwitchLayer('1-1-2')">dark_all</el-menu-item>
+              <el-menu-item index="1-1-3" @click="SwitchLayer('1-1-3')">light_all</el-menu-item>
+            </el-sub-menu>
+            <el-menu-item index="1-2">Gaode Map</el-menu-item>
             <el-menu-item index="1-3">Tian Map</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -148,10 +145,13 @@
             <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
           </div>
         </div>
-      <div>
-        <h3>Scenic Spot Name</h3>
-        <p>{{ name }}</p>
-      </div>
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+              <h3>Scenic Spot Name</h3>
+              <p>{{ name }}</p>
+          </div>
+          <el-button class="star" type="warning" :icon="Star" circle @click="addFavorite(name)" style="align-self: center"></el-button>          
+        </div>
       <div>
         <h4>Introduction</h4>
         <p>
@@ -180,7 +180,9 @@
         disabled
         score-template="{value} points"
         />
-        <h4>Remarks</h4>
+        <h4>
+          Remarks
+        </h4>
         <p>{{ remarks1 }}</p>
         <p>{{ remarks2 }}</p>
         <p>{{ remarks3 }}</p>
@@ -196,6 +198,7 @@
         />
         <h4>
           Your Remark
+        </h4>
           <el-input
             v-model="userrmk"
             maxlength="30"
@@ -207,9 +210,35 @@
           <el-button  type="primary" style="position: relative; left:10px;">
             Upload<el-icon class="el-icon--right" @click="submitComment"><Upload/></el-icon>
           </el-button>
-        </h4>
       </div>    
       </template>
+    </el-drawer>
+     <!--collection-->
+     <el-drawer 
+    v-model="drawer3" 
+    title="我的收藏" 
+    style="overflow: auto;"
+    :before-close="handleClose"
+    @open="fetchFavorites"
+  >
+    <el-scrollbar height="400px">
+      <template v-if="favor.length > 0">
+        <div v-for="(favorite, index) in favor" :key="index" class="scrollbar-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ebeef5;">
+          <p style="margin: 0;">{{ favorite }}</p>
+          <el-button type="primary" :icon="Close" @click="removeFavorite(index)" style="display: flex; align-items: center; justify-content: center;">取消收藏</el-button>
+        </div>
+      </template>
+      <template v-else>
+        <div class="empty-favorites">暂无收藏地点</div>
+      </template>
+    </el-scrollbar>
+  </el-drawer>
+    <el-drawer 
+    v-model="drawer4" 
+    title="个性化推荐" 
+    style="overflow: auto;"
+    :before-close="handleClose"
+    >
     </el-drawer>
   </div>
 </template>
@@ -224,11 +253,13 @@ import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
 import { route } from '../jses/route';
 import axios from 'axios';
-import { Edit,ChatDotSquare,EditPen,Loading,Search,Upload } from '@element-plus/icons-vue';
+import { Edit,ChatDotSquare,EditPen,Loading,Search,Upload,Star,Opportunity,CloseBold,Close } from '@element-plus/icons-vue';
 
 const store = useStore();
 const drawer = ref(false);
 const drawer2 = ref(false);
+const drawer3 = ref(false);
+const drawer4 = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
@@ -249,12 +280,68 @@ const city = ref();
 const remarks1 = ref([])
 const remarks2 = ref([])
 const remarks3 = ref([])
+const favor = ref([]); 
 
 const tfdrawer2 = () => {
   if( name.value != null) {
     drawer2.value = true;
   }
 }
+const tfdrawer3 = () => {
+  if(name != null) {
+    drawer3.value = true;
+  }
+}
+const tfdrawer4 = () => {
+  if(name != null) {
+    drawer4.value = true;
+  }
+}
+
+const fetchFavorites = async () => {
+  try {
+    const response = await axios.get('http://localhost:5001/get_favorites', {
+      params: { username: username.value }
+    });
+    if (response.status === 200) {
+      favor.value = response.data.favorites;
+    } else {
+;    }
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
+  }
+};
+
+const addFavorite = async (spotName) => {
+  try {
+    const response = await axios.post('http://localhost:5001/add_favorite', {
+      username: store.state.username,
+      spotname: spotName,
+    });
+    if (response.status === 200) {
+      favor.value.push(spotName);
+      console.log(favor.value); 
+      console.log(response);
+    }
+  } catch (error) {
+    console.error("Error adding favorite:", error);
+  }
+};
+
+const removeFavorite = async (index) => {
+  try {
+    const spotName = favor.value[index];
+    const response = await axios.post('http://localhost:5001/remove_favorite', {
+      username: store.state.username,
+      spotname: spotName,
+    });
+    if (response.status === 200) {
+      favor.value.splice(index, 1);
+    }
+  } catch (error) {
+    console.error("Error removing favorite:", error);
+  }
+};
 
 //获取数据
 const fetchData = async () => {
@@ -314,19 +401,13 @@ const getjw = () => {
   }
 };
 
-const submitComment = () => {
-  console.log(userrmk.value);
-  uploaduserrmk(userrmk.value);
-};
-
-const uploaduserrmk = async (userrmk) => {
-  console.log(userrmk)
+const submitComment = async () => {
   try {
     // 找到相应的位置
     const item = locations.value.find(d => d.NAME === scenery.value);
     if (item) {
       // 将新的评论插入到第一个位置
-      item.COMMENT.unshift(userrmk);
+      item.COMMENT.unshift(userrmk.value);
 
       // 发送更新后的数据到后端
       const response = await axios.post('http://localhost:5001/update-location', locations.value, {
@@ -356,8 +437,10 @@ const deletejw =() => {
 }
 
 //直接挂载 节省查询时间
-onMounted(fetchData);
-
+onMounted(() =>{
+  fetchData();
+  fetchFavorites();
+});
 // const language = ref('zh-cn')
 // const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))
 // const toggle = () => {

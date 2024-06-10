@@ -5,7 +5,7 @@ import {
   WebMercatorTilingScheme,
   Math as CesiumMath,
   Cartographic,
-  Cartesian2,
+  Cartesian2
 } from 'cesium';
 import CoordTransform from './CoordTransform';
 //全局变量viewer

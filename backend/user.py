@@ -23,10 +23,6 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-<<<<<<< Updated upstream
-=======
-# 建立数据库    
->>>>>>> Stashed changes
 def setup_database():
     with app.app_context():
         db.create_all()
@@ -52,18 +48,6 @@ def login():
         return jsonify({'message': 'Logged in successfully', 'username': data['username'], 'password': data['password']}), 200
     return jsonify({'message': 'Invalid username or password'}), 401
 
-<<<<<<< Updated upstream
-=======
-@app.route('/add_favorite_attraction', methods=['POST'])
-def add_favorite_attraction():
-    data = request.get_json()
-    user_id = data['user_id']  # 实际项目中应该从认证信息中获取
-    attraction_name = data['attraction_name']
-    favorite_attraction = FavoriteAttractions(user_id=user_id, attraction_name=attraction_name)
-    db.session.add(favorite_attraction)
-    db.session.commit()
-    return jsonify({'message': 'Attraction added to favorites successfully'}), 201
->>>>>>> Stashed changes
 @app.route('/update-location', methods=['POST'])
 def update_location():
     try:

@@ -5,6 +5,7 @@ from flask_cors import CORS
 import os
 from flask_jwt_extended import JWTManager, create_access_token
 import json
+import heapq
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -26,20 +27,6 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-# 定义搜索记录列表
-class SearchHistory(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    search_text = db.Column(db.String(255), nullable=False)
-    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
-
-# 定义收藏信息列表
-class FavoriteAttractions(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    attraction_name = db.Column(db.String(255), nullable=False)
-    added_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
 
 # 建立数据库    
 def setup_database():
@@ -68,41 +55,6 @@ def login():
         return jsonify({'message': 'Logged in successfully', 'username': data['username'], 'password': data['password']}), 200
     return jsonify({'message': 'Invalid username or password'}), 401
 
-@app.route('/api/search_history', methods=['GET'])
-def get_search_history():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({'message': 'User ID is required'}), 400
-    # 查询指定用户的搜索历史记录
-    search_histories = SearchHistory.query.filter_by(user_id=user_id).order_by(SearchHistory.timestamp.desc()).all()
-    return jsonify([{'id': history.id, 'search_text': history.search_text, 'timestamp': history.timestamp} for history in search_histories]), 200
-
-@app.route('/add_search_history', methods=['POST'])
-def add_search_history():
-    data = request.get_json()
-    if not data or 'user_id' not in data or 'search_text' not in data:
-        return jsonify({'message': 'Missing user_id or search_text'}), 400
-
-    user_id = data['user_id']
-    search_text = data['search_text']
-    try:
-        search_history = SearchHistory(user_id=user_id, search_text=search_text)
-        db.session.add(search_history)
-        db.session.commit()
-        return jsonify({'message': 'Search history added successfully'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'message': 'Failed to add search history', 'error': str(e)}), 500
-
-@app.route('/add_favorite_attraction', methods=['POST'])
-def add_favorite_attraction():
-    data = request.get_json()
-    user_id = data['user_id']  # 实际项目中应该从认证信息中获取
-    attraction_name = data['attraction_name']
-    favorite_attraction = FavoriteAttractions(user_id=user_id, attraction_name=attraction_name)
-    db.session.add(favorite_attraction)
-    db.session.commit()
-    return jsonify({'message': 'Attraction added to favorites successfully'}), 201
 @app.route('/update-location', methods=['POST'])
 def update_location():
     try:
@@ -162,6 +114,71 @@ def get_favorites():
         favorites = json.loads(user.favorites)
         return jsonify({'favorites': favorites}), 200
     return jsonify({'error': 'User not found'}), 404
+
+# 景点推荐功能
+# 函数：计算曼哈顿距离
+def manhattan_distance(x1, y1, x2, y2):
+    return abs(x1 - x2) + abs(y1 - y2)
+
+# 函数：找到与制定景点曼哈顿距离最小的三个景点
+def find_closest_spots(name, json_file_path):
+    # 使用 GB2312 编码打开 JSON 文件
+    with open(json_file_path, 'r', encoding='gb2312') as file:
+        data = json.load(file)  # 加载JSON数据
+
+    # 寻找符合搜索名称的景点
+    target_spot = None
+    for spot in data:
+        if spot['NAME'] == name:
+            target_spot = spot
+            break
+
+    if not target_spot:
+        return None, "指定的景点名称不存在"
+
+    target_lon = target_spot['LON']
+    target_lat = target_spot['LAT']
+
+    distances = []
+    for spot in data:
+        if spot['NAME'] != name:
+            lon = spot['LON']
+            lat = spot['LAT']
+            distance = manhattan_distance(target_lon, target_lat, lon, lat)
+            distances.append((distance, spot['NAME']))
+
+    # 使用最大堆来存储最近的三个景点
+    max_heap = []
+    for spot in data:
+        if spot['NAME'] != name:
+            lon = spot['LON']
+            lat = spot['LAT']
+            distance = manhattan_distance(target_lon, target_lat, lon, lat)
+            # 维护一个大小为3的最大堆
+            if len(max_heap) < 3:
+                heapq.heappush(max_heap, (-distance, spot['NAME']))  # 用负距离来构造最大堆
+            else:
+                heapq.heappushpop(max_heap, (-distance, spot['NAME']))
+
+    # 从最大堆中提取最近的三个景点
+    closest_spots = sorted((-heap[0], heap[1]) for heap in max_heap)
+
+    return [spot[1] for spot in closest_spots], None
+
+@app.route('/search_closest_spots', methods=['POST'])
+def search_closest_spots():
+    data = request.get_json()
+    spot_name = data.get('spotName') 
+
+    if not spot_name:
+        return jsonify({'error': 'No spot name provided'}), 400
+
+    closest_names, error = find_closest_spots(spot_name, json_file_path)
+    if error:
+        return jsonify({'error': error}), 404
+    else:
+        return jsonify({'closest_spots': closest_names}), 200
+
 
 
 if __name__ == '__main__':

@@ -233,13 +233,16 @@
       </template>
     </el-scrollbar>
   </el-drawer>
-    <el-drawer 
-    v-model="drawer4" 
-    title="个性化推荐" 
-    style="overflow: auto;"
-    :before-close="handleClose"
-    >
-    </el-drawer>
+    <el-drawer
+    v-model="drawerVisible"
+    title="个性化推荐"
+    :before-close="handleClose">
+    <ul>
+      <li v-for="spot in closestSpots" :key="spot.name">
+        {{ spot.name }}
+      </li>
+    </ul>
+  </el-drawer>
   </div>
 </template>
 
@@ -260,6 +263,7 @@ const drawer = ref(false);
 const drawer2 = ref(false);
 const drawer3 = ref(false);
 const drawer4 = ref(false);
+const drawerVisible = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
@@ -281,6 +285,8 @@ const remarks1 = ref([])
 const remarks2 = ref([])
 const remarks3 = ref([])
 const favor = ref([]); 
+const closestSpots = ref([]);
+
 
 const tfdrawer2 = () => {
   if( name.value != null) {
@@ -293,10 +299,17 @@ const tfdrawer3 = () => {
   }
 }
 const tfdrawer4 = () => {
-  if(name != null) {
-    drawer4.value = true;
+  const searchName = name.value.trim();
+  if (searchName) {
+    search_closest_spots(searchName).then(() => {
+      drawerVisible.value = true; // 打开抽屉
+    }).catch(error => {
+      console.error('Error fetching closest spots:', error);
+    });
+  } else {
+    console.warn("Name is null or empty.");
   }
-}
+};
 
 const fetchFavorites = async () => {
   try {
@@ -432,6 +445,23 @@ const submitComment = async () => {
   }
 };
 
+const search_closest_spots = async (searchName) => {
+  try {
+    const response = await fetch('http://localhost:5001/search_closest_spots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ spotName: searchName }) 
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    closestSpots.value = data.closest_spots;
+    console.log('Closest spots:', closestSpots.value);  // 检查是否正确获取数据
+  } catch (error) {
+    console.error('Failed to fetch spots:', error);
+  }
+};
 const deletejw =() => {
   store.commit('clearUser');
 }

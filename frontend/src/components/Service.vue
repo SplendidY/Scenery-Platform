@@ -79,7 +79,7 @@
               </ul>
             </el-scrollbar>
             <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
-            <el-button style="margin-left: 10px;" type="primary" @click="getjw">导航</el-button>
+            <el-button style="margin-left: 10px;" type="primary" @click="getjw();search_closest_spots(scenery)">导航</el-button>
           </el-menu-item>
         </el-menu>
         <!-- 用户头像 -->
@@ -265,6 +265,25 @@
     style="overflow: auto;"
     :before-close="handleClose"
     >
+    <el-row :gutter="20">
+      <el-col :span="24" v-for="(spot,index) in closestSpots" :key="spot">
+        <el-card 
+          body-style="background-color: #f0f5ff;"
+          shadow="never" 
+          style="margin:15px;">
+          <div slot="header" class="clearfix">
+            <span>{{ `推荐地点 ${String(index + 1).padStart(2, '0')}` }} </span>
+          </div>
+          <div style="display: flex;  padding: 0px;" >
+            <h3>景点名称：</h3>
+            <p style="font-size: 18px;">{{ spot }}</p>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <el-button @click="setSceneryAndNavigate(spot)">查看详细</el-button>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
     </el-drawer>
   </div>
 </template>
@@ -308,6 +327,7 @@ const remarks1 = ref([])
 const remarks2 = ref([])
 const remarks3 = ref([])
 const favor = ref([]); 
+const closestSpots = ref([]);
 
 const tfdrawer2 = () => {
   if( name.value != null) {
@@ -324,6 +344,13 @@ const tfdrawer4 = () => {
     drawer4.value = true;
   }
 }
+
+//个性化景点详细信息展示
+const setSceneryAndNavigate = (spot) => {
+  scenery.value = spot;
+  getjw();
+  tfdrawer2 ();
+};
 
 //新旧密码定义
 const form = ref({
@@ -463,6 +490,24 @@ const submitComment = async () => {
     }
   } catch (error) {
     console.error('更新评论时出错:', error);
+  }
+};
+
+const search_closest_spots = async (searchName) => {
+  try {
+    const response = await fetch('http://localhost:5001/search_closest_spots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ spotName: searchName }) 
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    closestSpots.value = data.closest_spots;
+    console.log('Closest spots:', closestSpots.value);  // 检查是否正确获取数据
+  } catch (error) {
+    console.error('Failed to fetch spots:', error);
   }
 };
 

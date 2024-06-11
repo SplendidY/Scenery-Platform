@@ -238,8 +238,8 @@
     title="个性化推荐"
     :before-close="handleClose">
     <ul>
-      <li v-for="spot in closestSpots" :key="spot.name">
-        {{ spot.name }}
+      <li v-for="spot in closestSpots" :key="spot">
+        {{ spot }}
       </li>
     </ul>
   </el-drawer>

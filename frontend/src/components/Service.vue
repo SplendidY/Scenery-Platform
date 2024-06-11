@@ -29,7 +29,7 @@
         <el-icon><ChatDotSquare /></el-icon>
         <template #title>景点信息</template>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="4" @click="toggleDrawPolygon">
         <el-icon><EditPen /></el-icon>
         <template #title>旅游指数综合打分</template>
       </el-menu-item>

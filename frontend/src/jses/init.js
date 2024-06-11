@@ -10,7 +10,6 @@ import {
 import CoordTransform from './CoordTransform';
 //全局变量viewer
 let viewer;
-//坐标转换
 
 //初始化cesium球
 async function init() {
@@ -31,12 +30,11 @@ async function init() {
   viewer.sceneModePicker.viewModel.duration = 0.0;
   viewer._cesiumWidget._creditContainer.style.display = 'none';
 
-const imageryProvider = new Cesium.UrlTemplateImageryProvider({
-  url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
-  tilingScheme: new Cesium.WebMercatorTilingScheme(),
-});
-
-viewer.imageryLayers.addImageryProvider(imageryProvider);
+  const imageryProvider = new Cesium.UrlTemplateImageryProvider({
+    url: 'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',
+    tilingScheme: new Cesium.WebMercatorTilingScheme(),
+  });
+  viewer.imageryLayers.addImageryProvider(imageryProvider);
 
   try {
     const position = await getCurrentPosition();
@@ -80,5 +78,5 @@ function getViewer() {
 }
 
 export {
-  getViewer,init
+  getViewer,init,
 }

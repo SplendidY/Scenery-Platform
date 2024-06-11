@@ -50,6 +50,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex';
 import Header from './Header.vue'
 import { ElMessage } from 'element-plus'
+
 let isRightPanelActive = ref(false);
 let signUpUser = ref('');
 let signUpPassword = ref('');

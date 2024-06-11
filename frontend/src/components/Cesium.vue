@@ -1,25 +1,45 @@
 <template>
-  <div id="cesiumContainer"></div>
+  <div>
+    <div id="cesiumContainer"></div>
+    <div id="service"></div>
+  </div>
 </template>
 
 <script setup>
 import { onBeforeMount, onMounted } from 'vue';
-import {init} from '../jses/init.js'
+import { init,getViewer } from '../jses/init'
+import { route } from '../jses/route'
+
 onBeforeMount(() => {
-      console.log("a");
-    })
+  console.log('a');
+});
+
 onMounted(() => {
   init();
-    });
+});
+
 </script>
-    
+
 <style>
 #cesiumContainer {
-  height:100%;
+  height: 100%;
   position: absolute;
-  left: 0 ;
+  left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+}
+
+#service {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 </style>

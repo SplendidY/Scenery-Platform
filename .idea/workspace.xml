@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0c4dd5c-9dbe-43b2-8fef-19a1df68955a" name="更改" comment="" />
+    <list default="true" id="b0c4dd5c-9dbe-43b2-8fef-19a1df68955a" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc 2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/instance/users.db" beforeDir="false" afterPath="$PROJECT_DIR$/backend/instance/users.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/jses/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/jses/init.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,10 +17,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2glBLP02UGx5nRXyzvfaacJD6RE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -21,9 +28,14 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.user.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/29861/Desktop/cs/python/test",
+    "git-widget-placeholder": "正在合并 spl",
+    "last_opened_file_path": "D:/Desktop/cs/GISapp/工作",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -62,7 +74,27 @@
       <option name="presentableId" value="Default" />
       <updated>1716262230420</updated>
       <workItem from="1716262233196" duration="48000" />
+      <workItem from="1717950725831" duration="8292000" />
+      <workItem from="1717995816425" duration="2080000" />
+      <workItem from="1718026442463" duration="723000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/$user.coverage" NAME="user 覆盖结果" MODIFIED="1718026730610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
   </component>
 </project>

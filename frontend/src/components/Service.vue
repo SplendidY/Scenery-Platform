@@ -1,6 +1,7 @@
 <template>
   <!-- 整个div -->
   <div style="height: 100vh; display: flex; flex-direction: column; overflow: hidden;">
+    <div id="5A" ref="chartContainer" style="width: 600px; height: 400px; position: absolute; z-index: 1000; background-color: #ebeef5; display: none; left: 64%; top:50%"></div>
     <!-- 左上角显隐栏 -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
       <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
@@ -9,7 +10,6 @@
       </el-radio-group>
     </div>
     <el-menu
-      default-active="2"
       class="el-menu-vertical"
       :collapse="isCollapse"
       style="position: absolute; top: 60px; left: 20px; z-index: 998;"
@@ -18,8 +18,10 @@
       <el-sub-menu index="1">
         <template #title>
           <el-icon><Edit /></el-icon>
-          <span>Navigator One</span>
+          <span>图表化</span>
         </template>
+        <el-menu-item index="1-1" @click="tfecharts()">浙江省各地级市3A级以上景区数量表</el-menu-item>
+        <el-menu-item index="1-2">item two</el-menu-item>
       </el-sub-menu>
       <el-menu-item index="2" @click="tfdrawer4">
         <el-icon><Opportunity /></el-icon>
@@ -214,7 +216,7 @@
       </template>
     </el-drawer>
      <!--collection-->
-     <el-drawer 
+  <el-drawer 
     v-model="drawer3" 
     title="我的收藏" 
     style="overflow: auto;"
@@ -224,7 +226,7 @@
     <el-scrollbar height="400px">
       <template v-if="favor.length > 0">
         <div v-for="(favorite, index) in favor" :key="index" class="scrollbar-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ebeef5;">
-          <p style="margin: 0;">{{ favorite }}</p>
+          <p style="margin: 0; cursor: pointer;" @click="routetospot(favorite)">{{ favorite }}</p>
           <el-button type="primary" :icon="Close" @click="removeFavorite(index)" style="display: flex; align-items: center; justify-content: center;">取消收藏</el-button>
         </div>
       </template>
@@ -233,16 +235,22 @@
       </template>
     </el-scrollbar>
   </el-drawer>
-    <el-drawer 
-    v-model="drawer4" 
-    title="个性化推荐" 
-    style="overflow: auto;"
+  <el-drawer
+    v-model="drawer5"
+    title="个性化推荐"
     :before-close="handleClose"
-    >
-    </el-drawer>
+    width="300px">
+    <template v-if="closestSpots.length > 0">
+      <div v-for="(spot, index) in closestSpots" :key="index" class="drawer5-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #ebeef5;">
+        <p style="margin: 0; cursor: pointer;" @click="routetospot(spot)">{{ spot }}</p>
+      </div>
+    </template>
+    <template v-else>
+      <div class="empty-favorites">暂无推荐地点</div>
+    </template>
+  </el-drawer>
   </div>
 </template>
-
 
 <script setup>
 import { ref,computed,onMounted } from 'vue'
@@ -253,17 +261,18 @@ import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
 import { route } from '../jses/route';
 import axios from 'axios';
-import { Edit,ChatDotSquare,EditPen,Loading,Search,Upload,Star,Opportunity,CloseBold,Close } from '@element-plus/icons-vue';
+import * as echarts from 'echarts';
+import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close } from '@element-plus/icons-vue';
 
 const store = useStore();
 const drawer = ref(false);
 const drawer2 = ref(false);
 const drawer3 = ref(false);
 const drawer4 = ref(false);
+const drawer5 = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
-const scenery = ref();
 const dialogVisible = ref(false)
 const userinfo = ref(false);
 const locations = ref([]);
@@ -275,12 +284,15 @@ const averagescore = ref(0);
 const userrmk = ref('');
 const name = ref();
 const introduction = ref();
-// const county = ref();
 const city = ref();
+const scenery = ref();
 const remarks1 = ref([])
 const remarks2 = ref([])
 const remarks3 = ref([])
 const favor = ref([]); 
+const closestSpots = ref([]);
+const chartContainer = ref(null);
+const chartVisible = ref(false);
 
 const tfdrawer2 = () => {
   if( name.value != null) {
@@ -293,10 +305,17 @@ const tfdrawer3 = () => {
   }
 }
 const tfdrawer4 = () => {
-  if(name != null) {
-    drawer4.value = true;
+  const searchName = name.value.trim();
+  if (searchName) {
+    search_closest_spots(searchName).then(() => {
+      drawer5.value = true;
+    }).catch(error => {
+      console.error('Error fetching closest spots:', error);
+    });
+  } else {
+    console.warn("Name is null or empty.");
   }
-}
+};
 
 const fetchFavorites = async () => {
   try {
@@ -432,8 +451,110 @@ const submitComment = async () => {
   }
 };
 
-const deletejw =() => {
+const search_closest_spots = async (searchName) => {
+  try {
+    const response = await fetch('http://localhost:5001/search_closest_spots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ spotName: searchName }) 
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    closestSpots.value = data.closest_spots;
+    console.log('Closest spots:', closestSpots.value);  // 检查是否正确获取数据
+  } catch (error) {
+    console.error('Failed to fetch spots:', error);
+  }
+};
+
+const deletejw = () => {
   store.commit('clearUser');
+}
+
+const tfecharts = () => {
+  chartVisible.value = !chartVisible.value;
+  if (chartVisible.value) {
+    chartContainer.value.style.display = 'block';
+    if (!chartContainer.value._initialized) {
+      initializeChart();
+      chartContainer.value._initialized = true;
+    }
+  } else {
+    chartContainer.value.style.display = 'none';
+  }
+};
+
+const initializeChart = () => {
+  const myChart = echarts.init(chartContainer.value);
+
+  const option = {
+  title: {
+    text: '浙江省各地级市3A级以上景区数量表',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  series: [
+    {
+      name: '景点数量',
+      type: 'pie',
+      radius: '50%',
+      data: [
+        { value: 101, name: '杭州市' },
+        { value: 78, name: '宁波市' },
+        { value: 72, name: '温州市' },
+        { value: 90, name: '台州市' },
+        { value: 65, name: '丽水市' },
+        { value: 86, name: '金华市' },
+        { value: 89, name: '湖州市' },
+        { value: 61, name: '嘉兴市' },
+        { value: 58, name: '绍兴市' },
+        { value: 24, name: '舟山市' },
+        { value: 69, name: '衢州市' },
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+  myChart.setOption(option);
+};
+
+const routetospot = (spot) => {
+  const item = locations.value.find(d => d.NAME === spot);
+  if (item) {
+    const coords = item.geometry.match(/POINT \((\d+\.\d+) (\d+\.\d+)\)/);
+    if (coords) {
+      const endj = parseFloat(coords[1]);
+      const endw = parseFloat(coords[2]);
+      store.commit('setendj', endj);
+      store.commit('setendw', endw);
+      route();
+    } else {
+      console.error('Invalid geometry format');
+    }
+    introduction.value = item.INTRODUCTION || '暂无信息';
+    name.value = item.NAME || '暂无信息';
+    city.value = item.CITY || '暂无信息';
+    averagescore.value = item.SCORE || '4'
+    remarks1.value = item.COMMENT[0] || '暂无信息';
+    remarks2.value = item.COMMENT[1] || '暂无信息';
+    remarks3.value = item.COMMENT[2] || '暂无信息';
+    scenery.value = item.NAME;
+  } 
+  else {
+    console.error('Name not found');
+  }
+  drawer3.value = false;
+  drawer5.value = false;
 }
 
 //直接挂载 节省查询时间
@@ -460,7 +581,7 @@ onMounted(() =>{
 
 <style>
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 200px;
+  width: 300px;
 }
 .flex-grow {
   flex-grow: 0;
@@ -484,4 +605,13 @@ html, body {
   cursor: pointer;
   border-radius: 50%;
 }
+
+.drawer5-item {
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.drawer5-item:hover {
+  background-color:skyblue; /* 更改为你想要的悬浮背景颜色 */
+}
+
 </style>

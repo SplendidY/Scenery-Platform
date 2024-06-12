@@ -20,8 +20,11 @@
           <el-icon><Edit /></el-icon>
           <span>图表化</span>
         </template>
-        <el-menu-item index="1-1" @click="tfecharts()">浙江省各地级市3A级以上景区数量表</el-menu-item>
-        <el-menu-item index="1-2">item two</el-menu-item>
+        <el-menu-item index="1-1" @click="tfecharts(1)">浙江省各地级市3A级以上景区数量总表</el-menu-item>
+        <el-menu-item index="1-2" @click="tfecharts(2)">浙江省各地级市3A级以上景区数量分表</el-menu-item>
+        <el-menu-item index="1-3"><el-input :prefix-icon="Search" style="position: relative; width: 180px;" placeholder="输入城市名称" v-model="cityname" clearable></el-input>
+        <el-button style="position: relative; left: 10px; width: 80px;" type="primary" @click="closeecharts"><el-icon><Close /></el-icon>关闭</el-button>
+        </el-menu-item>
       </el-sub-menu>
       <el-menu-item index="2" @click="tfdrawer4">
         <el-icon><Opportunity /></el-icon>
@@ -61,7 +64,7 @@
         >
           <div class="flex-grow" />
           <el-sub-menu index="1">
-            <template #title>&nbsp;&nbsp;&nbsp;&nbsp;Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
+            <template #title>&nbsp;&nbsp;&nbsp;&nbsp;<el-icon><Switch /></el-icon>Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
             <el-sub-menu index="1-1">
               <template #title>OpenStreetMap</template>
               <el-menu-item index="1-1-1" @click="SwitchLayer('1-1-1')">tile.openstreetmap(default)</el-menu-item>
@@ -81,7 +84,7 @@
               </ul>
             </el-scrollbar>
             <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
-            <el-button style="margin-left: 10px;" type="primary" @click="getjw">导航</el-button>
+            <el-button style="margin-left: 10px;" type="primary" @click="getjw"><el-icon><Position /></el-icon>导航</el-button>
           </el-menu-item>
         </el-menu>
         <!-- 用户头像 -->
@@ -89,7 +92,7 @@
             <el-button class="avatar-button" @click="drawer = true">
               <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
             </el-button>
-            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 30px; font-size: 16px;">log out</el-button>
+            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 30px; font-size: 16px;"><el-icon style="position: relative; right: 10px;"><SwitchButton /></el-icon>log out</el-button>
         </div>
       </el-footer>
     </el-container>
@@ -262,7 +265,8 @@ import { useStore } from 'vuex';
 import { route } from '../jses/route';
 import axios from 'axios';
 import * as echarts from 'echarts';
-import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus'
+import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch } from '@element-plus/icons-vue';
 
 const store = useStore();
 const drawer = ref(false);
@@ -281,7 +285,7 @@ const filteredLocations = ref([]);
 const isFocused = ref(false);
 const userscore = ref(0);
 const averagescore = ref(0);
-const userrmk = ref('');
+const userrmk = ref();
 const name = ref();
 const introduction = ref();
 const city = ref();
@@ -293,6 +297,20 @@ const favor = ref([]);
 const closestSpots = ref([]);
 const chartContainer = ref(null);
 const chartVisible = ref(false);
+const cityname = ref()
+const cityData = {
+  '杭州市': { '5A': 2, '4A': 20, '3A': 72 },
+  '宁波市': { '5A': 1, '4A': 18, '3A': 59 },
+  '温州市': { '5A': 1, '4A': 16, '3A': 55 },
+  '台州市': { '5A': 2, '4A': 18, '3A': 70 },
+  '丽水市': { '5A': 1, '4A': 10, '3A': 54 },
+  '金华市': { '5A': 1, '4A': 21, '3A': 64 },
+  '湖州市': { '5A': 1, '4A': 27, '3A': 61 },
+  '嘉兴市': { '5A': 1, '4A': 9, '3A': 51 },
+  '绍兴市': { '5A': 1, '4A': 14, '3A': 43 },
+  '舟山市': { '5A': 1, '4A': 6, '3A': 17 },
+  '衢州市': { '5A': 2, '4A': 14, '3A': 53 }
+};
 
 const tfdrawer2 = () => {
   if( name.value != null) {
@@ -473,60 +491,131 @@ const deletejw = () => {
   store.commit('clearUser');
 }
 
-const tfecharts = () => {
-  chartVisible.value = !chartVisible.value;
-  if (chartVisible.value) {
-    chartContainer.value.style.display = 'block';
-    if (!chartContainer.value._initialized) {
-      initializeChart();
-      chartContainer.value._initialized = true;
+const tfecharts = (n) => {
+  if ((n == 2)&&(cityname.value == undefined)) {
+    ElMessage.error({message:`请输入想查询的城市名称`,showClose:true});
+    console.log(cityname.value);
+  }
+  else if ((n == 1)&&(chartVisible.value == false)) {
+    chartVisible.value = !chartVisible.value;
+    if (chartVisible.value) {
+      chartContainer.value.style.display = 'block'; 
+      initialChart(n);
+    } else {
+      chartContainer.value.style.display = 'none';
     }
-  } else {
-    chartContainer.value.style.display = 'none';
+  }
+  else if ((n == 1)&&(chartVisible.value == true)) {
+    console.log(chartVisible.value)
+    if (chartVisible.value) {
+      chartContainer.value.style.display = 'block'; 
+      initialChart(n);
+    } else {
+      chartContainer.value.style.display = 'none';
+    }
+  }
+  else if ((n == 2)&&(chartVisible.value == true)) {
+    if (chartVisible.value) {
+      chartContainer.value.style.display = 'block'; 
+      initialChart(n);
+    } else {
+      chartContainer.value.style.display = 'none';
+    }
+  }
+  else if ((n == 2)&&(chartVisible.value == false)&&(cityname.value != undefined)) {
+    chartVisible.value = !chartVisible.value;
+    if (chartVisible.value) {
+      chartContainer.value.style.display = 'block'; 
+      initialChart(n);
+    } else {
+      chartContainer.value.style.display = 'none';
+    }
   }
 };
 
-const initializeChart = () => {
-  const myChart = echarts.init(chartContainer.value);
+const initialChart = (n) => {
+  if(cityname)
+  if (chartContainer.value._myChart) {
+    chartContainer.value._myChart.dispose();
+  }
 
-  const option = {
-  title: {
-    text: '浙江省各地级市3A级以上景区数量表',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'item'
-  },
-  series: [
-    {
-      name: '景点数量',
-      type: 'pie',
-      radius: '50%',
-      data: [
-        { value: 101, name: '杭州市' },
-        { value: 78, name: '宁波市' },
-        { value: 72, name: '温州市' },
-        { value: 90, name: '台州市' },
-        { value: 65, name: '丽水市' },
-        { value: 86, name: '金华市' },
-        { value: 89, name: '湖州市' },
-        { value: 61, name: '嘉兴市' },
-        { value: 58, name: '绍兴市' },
-        { value: 24, name: '舟山市' },
-        { value: 69, name: '衢州市' },
-      ],
-      emphasis: {
-        itemStyle: {
-          shadowBlur: 10,
-          shadowOffsetX: 0,
-          shadowColor: 'rgba(0, 0, 0, 0.5)'
+  chartContainer.value._myChart = echarts.init(chartContainer.value);
+  if (n == 1) {
+    const option = {
+      title: {
+        text: '浙江省各地级市3A+级景区数量总表',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      series: [{
+        name: '景点数量',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          { value: 110, name: '杭州市' },
+          { value: 78, name: '宁波市' },
+          { value: 72, name: '温州市' },
+          { value: 90, name: '台州市' },
+          { value: 65, name: '丽水市' },
+          { value: 86, name: '金华市' },
+          { value: 89, name: '湖州市' },
+          { value: 61, name: '嘉兴市' },
+          { value: 58, name: '绍兴市' },
+          { value: 24, name: '舟山市' },
+          { value: 68, name: '衢州市' }
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
         }
-      }
+      }]
+    };
+    chartContainer.value._myChart.setOption(option);
+  } else if (n == 2) {
+    const city = cityname.value;
+    if (cityData[city]) {
+      const data = cityData[city];
+      const option = {
+        title: {
+          text: `${city}3A+级景区数量表`,
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'item'
+        },
+        series: [{
+          name: '景点数量',
+          type: 'pie',
+          radius: '50%',
+          data: [
+            { value: data['5A'], name: '5A' },
+            { value: data['4A'], name: '4A' },
+            { value: data['3A'], name: '3A' }
+          ],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }]
+      };
+      chartContainer.value._myChart.setOption(option);
+    } else {
+      ;
     }
-  ]
+  }
 };
-  myChart.setOption(option);
-};
+
+const closeecharts = () =>{
+  chartContainer.value.style.display = 'none';
+}
 
 const routetospot = (spot) => {
   const item = locations.value.find(d => d.NAME === spot);

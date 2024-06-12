@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0c4dd5c-9dbe-43b2-8fef-19a1df68955a" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Cesium.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Cesium.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Service.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Service.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/jses/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/jses/route.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/resources/data.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/resources/data2.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/resources/data2.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +89,7 @@
       <workItem from="1718026442463" duration="880000" />
       <workItem from="1718103683492" duration="726000" />
       <workItem from="1718104427166" duration="554000" />
-      <workItem from="1718201081012" duration="6517000" />
+      <workItem from="1718201081012" duration="7446000" />
     </task>
     <servers />
   </component>

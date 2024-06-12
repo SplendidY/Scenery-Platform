@@ -11,6 +11,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = 'klauserg6c1p3pwobqc'
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 json_file_path = '../frontend/src/resources/data2.json'
@@ -179,7 +180,26 @@ def search_closest_spots():
     else:
         return jsonify({'closest_spots': closest_names}), 200
 
+# 修改密码功能
+@app.route('/change-password', methods=['POST'])
+@jwt_required()
+def change_password():
+    user_id = get_jwt_identity()  # 获取JWT令牌中的用户ID
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+    
+    data = request.get_json()
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
 
+    if not user.check_password(old_password):
+        return jsonify({"error": "Old password is incorrect"}), 401
+
+    user.set_password(new_password)
+    db.session.commit()
+
+    return jsonify({"message": "Password updated successfully"}), 200
 
 if __name__ == '__main__':
     setup_database()

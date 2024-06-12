@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import os
-from flask_jwt_extended import JWTManager, create_access_token
+#from flask_jwt_extended import JWTManager, create_access_token
 import json
 import heapq
 
@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'klauserg6c1p3pwobqc'
 db = SQLAlchemy(app)
-jwt = JWTManager(app)
+#jwt = JWTManager(app)
 json_file_path = '../frontend/src/resources/data2.json'
 
 # 定义用户数据列表

@@ -79,7 +79,7 @@
               </ul>
             </el-scrollbar>
             <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
-            <el-button style="margin-left: 10px;" type="primary" @click="getjw">导航</el-button>
+            <el-button style="margin-left: 10px;" type="primary" @click="getjw();search_closest_spots(scenery)">导航</el-button>
           </el-menu-item>
         </el-menu>
         <!-- 用户头像 -->
@@ -125,6 +125,32 @@
         <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
         <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
       </div>
+      <div style="display: flex;align-items: center;padding: 15px;">
+        <!--修改密码-->
+        <el-button type="primary" plain @click="dialogVisible1=true">修改密码</el-button>
+        <el-dialog
+          title="修改密码"
+          v-model="dialogVisible1"
+          width="30%"
+          :center="true"
+          >
+          <el-form :model="form" label-width="auto" style="max-width: 500px">
+            <el-form-item label="旧密码" >
+            <el-input v-model="form.oldPassword" placeholder="请输入旧密码" type="password" />
+            </el-form-item>
+            <el-form-item label="新密码">
+              <el-input v-model="form.newPassword" placeholder="请输入新密码" type="password" />
+            </el-form-item>
+            <el-form-item label="确认密码" >
+              <el-input v-model="form.confirmnewPassword" placeholder="请确认密码" type="password" />
+            </el-form-item>
+          </el-form>
+          <div class="dialog-footer">
+            <el-button type="primary" @click="dialogVisible1 = false; handleSubmit">保存</el-button>
+          </div>
+        </el-dialog>
+      </div>
+    
     </el-drawer>  
     <el-drawer 
     v-model="drawer2" 
@@ -233,16 +259,32 @@
       </template>
     </el-scrollbar>
   </el-drawer>
-    <el-drawer
-    v-model="drawerVisible"
-    title="个性化推荐"
-    :before-close="handleClose">
-    <ul>
-      <li v-for="spot in closestSpots" :key="spot">
-        {{ spot }}
-      </li>
-    </ul>
-  </el-drawer>
+    <el-drawer 
+    v-model="drawer4" 
+    title="个性化推荐" 
+    style="overflow: auto;"
+    :before-close="handleClose"
+    >
+    <el-row :gutter="20">
+      <el-col :span="24" v-for="(spot,index) in closestSpots" :key="spot">
+        <el-card 
+          body-style="background-color: #f0f5ff;"
+          shadow="never" 
+          style="margin:15px;">
+          <div slot="header" class="clearfix">
+            <span>{{ `推荐地点 ${String(index + 1).padStart(2, '0')}` }} </span>
+          </div>
+          <div style="display: flex;  padding: 0px;" >
+            <h3>景点名称：</h3>
+            <p style="font-size: 18px;">{{ spot }}</p>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <el-button @click="setSceneryAndNavigate(spot)">查看详细</el-button>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+    </el-drawer>
   </div>
 </template>
 
@@ -263,12 +305,12 @@ const drawer = ref(false);
 const drawer2 = ref(false);
 const drawer3 = ref(false);
 const drawer4 = ref(false);
-const drawerVisible = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
 const scenery = ref();
 const dialogVisible = ref(false)
+const dialogVisible1 = ref(false)
 const userinfo = ref(false);
 const locations = ref([]);
 const jsonUrl = new URL('../resources/data2.json', import.meta.url).href;
@@ -287,7 +329,6 @@ const remarks3 = ref([])
 const favor = ref([]); 
 const closestSpots = ref([]);
 
-
 const tfdrawer2 = () => {
   if( name.value != null) {
     drawer2.value = true;
@@ -299,17 +340,24 @@ const tfdrawer3 = () => {
   }
 }
 const tfdrawer4 = () => {
-  const searchName = name.value.trim();
-  if (searchName) {
-    search_closest_spots(searchName).then(() => {
-      drawerVisible.value = true; // 打开抽屉
-    }).catch(error => {
-      console.error('Error fetching closest spots:', error);
-    });
-  } else {
-    console.warn("Name is null or empty.");
+  if(name != null) {
+    drawer4.value = true;
   }
+}
+
+//个性化景点详细信息展示
+const setSceneryAndNavigate = (spot) => {
+  scenery.value = spot;
+  getjw();
+  tfdrawer2 ();
 };
+
+//新旧密码定义
+const form = ref({
+  oldPassword: '',
+  newPassword: '',
+  confirmnewPassword: ''
+});
 
 const fetchFavorites = async () => {
   try {
@@ -462,6 +510,7 @@ const search_closest_spots = async (searchName) => {
     console.error('Failed to fetch spots:', error);
   }
 };
+
 const deletejw =() => {
   store.commit('clearUser');
 }
@@ -513,5 +562,11 @@ html, body {
   padding: 0;
   cursor: pointer;
   border-radius: 50%;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: center; 
+  padding: 10px 0; 
 }
 </style>

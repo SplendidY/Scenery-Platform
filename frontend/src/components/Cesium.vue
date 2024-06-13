@@ -15,6 +15,8 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
+  var panel = document.getElementById("service");
+  panel.style.display = "none";
   init();
 });
 
@@ -35,7 +37,7 @@ onMounted(() => {
   top: 10px;
   right: 10px;
   width: 300px;
-  max-height: 500px;
+  max-height: 400px;
   overflow-y: auto;
   background-color: white;
   padding: 10px;

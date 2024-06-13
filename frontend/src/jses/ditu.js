@@ -3,9 +3,11 @@ import { getViewer } from './init'
 function SwitchLayer(index) {
     const viewer = getViewer();
     if (index === '1-1-1') {
+        console.log('a');
         viewer.imageryLayers.removeAll();
         const osmProvider1 = new Cesium.OpenStreetMapImageryProvider({
-            url:"https://tile.openstreetmap.org/",
+            url:"https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+            tilingScheme: new Cesium.WebMercatorTilingScheme(),
         });
         viewer.imageryLayers.addImageryProvider(osmProvider1);
     }

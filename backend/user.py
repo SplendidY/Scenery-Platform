@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import os
-
 import json
 import heapq
 
@@ -12,6 +11,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
 json_file_path = '../frontend/src/resources/data2.json'
 
 # 定义用户数据列表

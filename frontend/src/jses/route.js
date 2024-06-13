@@ -55,6 +55,9 @@ async function getAMapDrivingRoute(startLng, startLat, endLng, endLat) {
   return new Promise((resolve, reject) => {
     AMap.plugin('AMap.Driving', function () {
       try {
+        if (driving) {
+          driving.clear(); // 销毁先前的 driving 实例
+        }
         driving = new AMap.Driving({
           map: null,
           panel: 'service',//这个service指的是右上角的路线表格而不是service.vue

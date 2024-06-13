@@ -180,6 +180,27 @@ def search_closest_spots():
         return jsonify({'closest_spots': closest_names}), 200
 
 
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    data = request.get_json()
+    username = data.get('user_name')
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+    confirm_new_password = data.get('confirm_new_password')
+    user = User.query.filter_by(username=username).first()
+
+    if user:
+        if not user.check_password(old_password):
+            return jsonify({"error": "Old password is incorrect"}), 401
+
+        if new_password != confirm_new_password:
+            return jsonify({"error": "New passwords do not match"}), 422
+
+        user.set_password(new_password)
+        db.session.commit()
+
+        return jsonify({"message": "Password updated successfully"}), 200
+
 
 if __name__ == '__main__':
     setup_database()

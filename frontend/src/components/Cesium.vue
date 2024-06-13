@@ -15,6 +15,8 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
+  var panel = document.getElementById("service");
+  panel.style.display = "none";
   init();
 });
 

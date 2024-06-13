@@ -34,11 +34,7 @@
         <el-icon><ChatDotSquare /></el-icon>
         <template #title>景点信息</template>
       </el-menu-item>
-      <el-menu-item index="4" @click="toggleDrawPolygon">
-        <el-icon><EditPen /></el-icon>
-        <template #title>旅游指数综合打分</template>
-      </el-menu-item>
-      <el-menu-item index="5" @click="tfdrawer3">
+      <el-menu-item index="4" @click="tfdrawer3">
         <el-icon><Star /></el-icon>
         <template #title>我的收藏</template>
       </el-menu-item>
@@ -129,6 +125,26 @@
       <div style="display: flex;align-items: center;">
         <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
         <div> &nbsp;&nbsp;&nbsp; {{ username }} </div>
+      </div>
+      <div style="display: flex;align-items: center;padding: 15px;">
+        <!--修改密码-->
+        <el-button type="primary" plain @click="dialogVisible1=true">修改密码</el-button>
+        <el-dialog title="修改密码" v-model="dialogVisible1" width="30%" :center="true">
+          <el-form :model="form" label-width="auto" style="max-width: 500px">
+            <el-form-item label="旧密码">
+              <el-input v-model="form.oldPassword" placeholder="请输入旧密码" type="password" />
+            </el-form-item>
+            <el-form-item label="新密码">
+              <el-input v-model="form.newPassword" placeholder="请输入新密码" type="password" />
+            </el-form-item>
+            <el-form-item label="确认密码">
+              <el-input v-model="form.confirmNewPassword" placeholder="请确认密码" type="password" />
+            </el-form-item>
+          </el-form>
+          <div class="dialog-footer">
+            <el-button type="primary" @click="handleSubmit">保存</el-button>
+          </div>
+        </el-dialog>
       </div>
     </el-drawer>  
     <el-drawer 
@@ -278,6 +294,7 @@ const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
 const dialogVisible = ref(false)
+const dialogVisible1 = ref(false)
 const userinfo = ref(false);
 const locations = ref([]);
 const jsonUrl = new URL('../resources/data2.json', import.meta.url).href;
@@ -311,7 +328,40 @@ const cityData = {
   '舟山市': { '5A': 1, '4A': 6, '3A': 17 },
   '衢州市': { '5A': 2, '4A': 14, '3A': 53 }
 };
+const form = ref({
+  oldPassword: '',
+  newPassword: '',
+  confirmnewPassword: ''
+});
+const handleSubmit = async () => {
+  if (form.value.newPassword !== form.value.confirmNewPassword) {
+    ElMessage.error('新密码和确认密码不匹配，请重新输入');
+    return;
+  }
 
+  try {
+    const response = await axios.post('http://localhost:5001/change_password', {
+      user_name: store.state.username,
+      old_password: form.value.oldPassword,
+      new_password: form.value.newPassword,
+      confirm_new_password: form.value.confirmNewPassword
+    });
+
+    const result = response.data;
+    if (response.status === 200) {
+      ElMessage.success('密码修改成功');
+      dialogVisible1.value = false;
+      form.value.oldPassword = '';
+      form.value.newPassword = '';
+      form.value.confirmNewPassword = '';
+    } else {
+      ElMessage.error(`错误: ${result.error}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    ElMessage.error('旧密码错误');
+  }
+};
 const tfdrawer2 = () => {
   if( name.value != null) {
     drawer2.value = true;
@@ -412,8 +462,12 @@ const handleBlur = () => {
 
 //获取选中项目的经纬度以及各种信息
 const getjw = () => {
+  var panel = document.getElementById("service");
   const item = locations.value.find(d => d.NAME === scenery.value);
   if (item) {
+    if (panel.style.display === "none") {
+      panel.style.display = "block";
+    }
     const coords = item.geometry.match(/POINT \((\d+\.\d+) (\d+\.\d+)\)/);
     if (coords) {
       const endj = parseFloat(coords[1]);

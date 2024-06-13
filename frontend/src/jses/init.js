@@ -21,6 +21,11 @@ async function init() {
   });
   Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0Y2U5MWRhOC0zYzdhLTRjMGItODkwNC02NzVmNGFmMTBkOWEiLCJpZCI6MjA1MjM5LCJpYXQiOjE3MTE2ODUwMjF9.RRfIFU8B-huDx7VQOLeAmMabtoIcIkA1m2SRaRYopUI';
   viewer = new Cesium.Viewer('cesiumContainer', {
+      contextOptions: {
+        webgl: {
+          preserveDrawingBuffer: true
+        }
+      },
     animation: false,
     timeline: false,
     baseLayerPicker: false,

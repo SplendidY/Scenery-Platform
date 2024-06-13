@@ -38,8 +38,8 @@
         <el-icon><Star /></el-icon>
         <template #title>我的收藏</template>
       </el-menu-item>
-      <el-menu-item index="5" @click="tfdrawer6">
-          <el-icon><Route /></el-icon>
+      <el-menu-item index="5" @click="loadmap">
+          <el-icon><CameraFilled /></el-icon>
           <template #title>路线存储</template>
         </el-menu-item>
     </el-menu>
@@ -152,7 +152,7 @@
       <template #default>
         <div class="spot-photo">
           <div style="text-align: center;">
-            <img src="../assets/2.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
+            <img src="../assets/西湖.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
           </div>
         </div>
         <div style="display: flex; justify-content: space-between;">
@@ -271,7 +271,8 @@ import { route } from '../jses/route';
 import axios from 'axios';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
-import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch } from '@element-plus/icons-vue';
+import html2canvas from 'html2canvas';
+import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch,CameraFilled } from '@element-plus/icons-vue';
 
 const store = useStore();
 const drawer = ref(false);
@@ -700,7 +701,21 @@ const routetospot = (spot) => {
   drawer3.value = false;
   drawer5.value = false;
 }
-
+const loadmap = () => {
+  const cesiumContainer = document.getElementById('cesiumContainer');
+  if (cesiumContainer) {
+    html2canvas(cesiumContainer).then(canvas => {
+      // 创建一个链接元素
+      let link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'cesium_screenshot.png';
+      // 触发下载
+      link.click();
+    });
+  } else {
+    console.error('未找到 cesiumContainer 元素');
+  }
+}
 //直接挂载 节省查询时间
 onMounted(() =>{
   fetchData();

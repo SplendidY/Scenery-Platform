@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 import os
-#from flask_jwt_extended import JWTManager, create_access_token
+
 import json
 import heapq
 
@@ -13,7 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'klauserg6c1p3pwobqc'
 db = SQLAlchemy(app)
-#jwt = JWTManager(app)
 json_file_path = '../frontend/src/resources/data2.json'
 
 # 定义用户数据列表
@@ -180,26 +179,27 @@ def search_closest_spots():
     else:
         return jsonify({'closest_spots': closest_names}), 200
 
-# 修改密码功能
-@app.route('/change-password', methods=['POST'])
-@jwt_required()
+@app.route('/change_password', methods=['POST'])
 def change_password():
-    user_id = get_jwt_identity()  # 获取JWT令牌中的用户ID
-    user = User.query.filter_by(id=user_id).first()
-    if user is None:
-        return jsonify({"error": "User not found"}), 404
-    
     data = request.get_json()
+    username = data.get('user_name')
     old_password = data.get('old_password')
     new_password = data.get('new_password')
+    confirm_new_password = data.get('confirm_new_password')
+    user = User.query.filter_by(username=username).first()
 
-    if not user.check_password(old_password):
-        return jsonify({"error": "Old password is incorrect"}), 401
+    if user:
+        if not user.check_password(old_password):
+            return jsonify({"error": "Old password is incorrect"}), 401
 
-    user.set_password(new_password)
-    db.session.commit()
+        if new_password != confirm_new_password:
+            return jsonify({"error": "New passwords do not match"}), 422
+        
+        user.set_password(new_password)
+        db.session.commit()
 
-    return jsonify({"message": "Password updated successfully"}), 200
+        return jsonify({"message": "Password updated successfully"}), 200
+
 
 if __name__ == '__main__':
     setup_database()

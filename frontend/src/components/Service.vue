@@ -128,25 +128,20 @@
       <div style="display: flex;align-items: center;padding: 15px;">
         <!--修改密码-->
         <el-button type="primary" plain @click="dialogVisible1=true">修改密码</el-button>
-        <el-dialog
-          title="修改密码"
-          v-model="dialogVisible1"
-          width="30%"
-          :center="true"
-          >
+        <el-dialog title="修改密码" v-model="dialogVisible1" width="30%" :center="true">
           <el-form :model="form" label-width="auto" style="max-width: 500px">
-            <el-form-item label="旧密码" >
-            <el-input v-model="form.oldPassword" placeholder="请输入旧密码" type="password" />
+            <el-form-item label="旧密码">
+              <el-input v-model="form.oldPassword" placeholder="请输入旧密码" type="password" />
             </el-form-item>
             <el-form-item label="新密码">
               <el-input v-model="form.newPassword" placeholder="请输入新密码" type="password" />
             </el-form-item>
-            <el-form-item label="确认密码" >
-              <el-input v-model="form.confirmnewPassword" placeholder="请确认密码" type="password" />
+            <el-form-item label="确认密码">
+              <el-input v-model="form.confirmNewPassword" placeholder="请确认密码" type="password" />
             </el-form-item>
           </el-form>
           <div class="dialog-footer">
-            <el-button type="primary" @click="dialogVisible1 = false; handleSubmit">保存</el-button>
+            <el-button type="primary" @click="handleSubmit">保存</el-button>
           </div>
         </el-dialog>
       </div>
@@ -508,6 +503,36 @@ const search_closest_spots = async (searchName) => {
     console.log('Closest spots:', closestSpots.value);  // 检查是否正确获取数据
   } catch (error) {
     console.error('Failed to fetch spots:', error);
+  }
+};
+
+const handleSubmit = async () => {
+  if (form.value.newPassword !== form.value.confirmNewPassword) {
+    alert('新密码和确认密码不匹配，请重新输入');
+    return;
+  }
+
+  try {
+    const response = await axios.post('http://localhost:5001/change_password', {
+      user_name: store.state.username,
+      old_password: form.value.oldPassword,
+      new_password: form.value.newPassword,
+      confirm_new_password: form.value.confirmNewPassword
+    });
+
+    const result = response.data;
+    if (response.status === 200) {
+      alert('密码修改成功');
+      dialogVisible1.value = false;
+      form.value.oldPassword = '';
+      form.value.newPassword = '';
+      form.value.confirmNewPassword = '';
+    } else {
+      alert(`错误: ${result.error}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('密码修改失败，请重试');
   }
 };
 

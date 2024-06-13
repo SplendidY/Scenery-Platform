@@ -38,13 +38,8 @@
         <el-icon><Star /></el-icon>
         <template #title>我的收藏</template>
       </el-menu-item>
-<<<<<<< HEAD
-      <el-menu-item index="5" @click="tfdrawer6">
-          <el-icon><PictureFilled /></el-icon>
-=======
       <el-menu-item index="5" @click="loadmap">
           <el-icon><CameraFilled /></el-icon>
->>>>>>> spl
           <template #title>路线存储</template>
         </el-menu-item>
     </el-menu>
@@ -276,12 +271,8 @@ import { route } from '../jses/route';
 import axios from 'axios';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
-<<<<<<< HEAD
-import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch,PictureFilled } from '@element-plus/icons-vue';
-=======
 import html2canvas from 'html2canvas';
 import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch,CameraFilled } from '@element-plus/icons-vue';
->>>>>>> spl
 
 const store = useStore();
 const drawer = ref(false);

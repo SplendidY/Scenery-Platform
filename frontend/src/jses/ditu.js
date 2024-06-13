@@ -37,8 +37,8 @@ function SwitchLayer(index) {
     else if (index === '1-3') {
         viewer.imageryLayers.removeAll();
         var provider = new Cesium.WebMapServiceImageryProvider({
-            url:'http://localhost:8080/geoserver/nurc/wms',
-            layers:'nurc:Arc_Sample',
+            url:'http://localhost:8080/geoserver/ne/wms',
+            layers:'ne:countries',
             parameters:{
               service: 'WMS',
               format:'image/png',

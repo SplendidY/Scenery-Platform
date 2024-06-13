@@ -11,7 +11,6 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'klauserg6c1p3pwobqc'
 db = SQLAlchemy(app)
 json_file_path = '../frontend/src/resources/data2.json'
 

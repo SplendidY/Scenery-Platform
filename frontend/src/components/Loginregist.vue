@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex';
 import Header from './Header.vue'
@@ -147,6 +147,7 @@ function checkUserPwd() {
   userPwdMsg.value = "OK";
   return true;
 }
+
 </script>
 
 

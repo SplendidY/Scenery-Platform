@@ -11,13 +11,14 @@ import CoordTransform from './CoordTransform';
 import { ElLoading } from 'element-plus';
 //全局变量viewer
 let viewer;
-const loading = ElLoading.service({
-  lock: true,
-  text: '正在定位...',
-  background: 'rgba(0, 0, 0, 0.7)',
-});
+
 //初始化cesium球
 async function init() {
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在定位...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  });
   Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0Y2U5MWRhOC0zYzdhLTRjMGItODkwNC02NzVmNGFmMTBkOWEiLCJpZCI6MjA1MjM5LCJpYXQiOjE3MTE2ODUwMjF9.RRfIFU8B-huDx7VQOLeAmMabtoIcIkA1m2SRaRYopUI';
   viewer = new Cesium.Viewer('cesiumContainer', {
     animation: false,

@@ -17,10 +17,10 @@ conda activate myflaskenv # 你的环境名
 pip install -r requirements.txt
 ```
 
-2.运行后端python文件
+2.运行flask
    
 ```bash
-python user.py
+flask run
 ```
 
 3.前后端协同
@@ -30,5 +30,9 @@ python user.py
 注：如果有新的包加入，可以用以下生成requirement.txt文件的命令更新列表：
 
 ```bash
+pip install pipreqs
+cd ../ #退出到上一级目录，假设你现在正在backend文件夹内
+pipreqs backend #扫描backend文件夹中的所有python文件，自动生成requirements.txt
+pipreqs backend --force #强行覆盖现有的requirements.txt
 pip freeze > requirements.txt
 ```

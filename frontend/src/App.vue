@@ -7,5 +7,9 @@
     </div>
 </template>
 
-<style scoped>
-  </style>
+
+<style lang="scss">
+body {
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+</style>

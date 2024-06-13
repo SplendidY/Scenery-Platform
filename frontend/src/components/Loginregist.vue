@@ -1,26 +1,30 @@
 <template>
   <div>
     <div class="background-container">
+      <video autoplay muted loop>
+          <source src="../assets/千岛湖.mp4" type="video/mp4">
+          您的浏览器不支持HTML5视频标签。
+      </video>
       <Header></Header>
       <div class="container" :class="{ 'right-panel-active': isRightPanelActive }">
         <div class="container__form container--signup">
           <form class="form" @submit.prevent="handleSubmitSignUp">
-            <p class="form__title">Sign Up</p>
-            <input type="text" v-model="signUpUser" placeholder="User(3-12characters)" class="input" @blur="checkUsername()" />
+            <p class="form__title">注册</p>
+            <input type="text" v-model="signUpUser" placeholder="账号(3-12个字符)" class="input" @blur="checkUsername()" />
             <span :class="{ 'error-text': !isUsernameValid }">{{ usernameMsg }}</span>
-            <input type="password" v-model="signUpPassword" placeholder="Password(6-20characters)" class="input" @blur="checkUserPwd()" />
+            <input type="password" v-model="signUpPassword" placeholder="密码(6-20个字符)" class="input" @blur="checkUserPwd()" />
             <span :class="{ 'error-text': !isPasswordValid }">{{ userPwdMsg }}</span>
-            <button type="submit" class="btn">Sign Up</button>
+            <button type="submit" class="btn">注册</button>
           </form>
         </div>
 
         <div class="container__form container--signin">
           <form class="form" @submit.prevent="handleSubmitSignIn">
-            <p class="form__title">Sign In</p>
-            <input type="text" v-model="signInUser" placeholder="User" class="input" />
-            <input type="password" v-model="signInPassword" placeholder="Password" class="input" />
-            <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">Forgot your password?</a>
-            <button type="submit" class="btn" id="inbtn">Sign In</button>
+            <p class="form__title">登录</p>
+            <input type="text" v-model="signInUser" placeholder="账号" class="input" />
+            <input type="password" v-model="signInPassword" placeholder="密码" class="input" />
+            <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">忘记密码？</a>
+            <button type="submit" class="btn" id="inbtn">登录</button>
           </form>
         </div>
 
@@ -29,12 +33,12 @@
           <div class="overlay">
             <div class="overlay__panel overlay--left">
               <router-link to="/login">
-                <button class="btn" @click="toggleSignIn" id="changein">Sign In</button>
+                <button class="btn" @click="toggleSignIn" id="changein">登录</button>
               </router-link>
             </div>
             <div class="overlay__panel overlay--right">
               <router-link to="/regist">
-                <button class="btn" @click="toggleSignUp">Sign Up</button>
+                <button class="btn" @click="toggleSignUp">注册</button>
               </router-link>
             </div>
           </div>
@@ -75,7 +79,7 @@ const toggleSignUp = () => {
 const handleSubmitSignUp = async () => {
   if (isUsernameValid.value && isPasswordValid.value) {
     try {
-      const response = await fetch('http://localhost:5001/register', {
+      const response = await fetch('http://127.0.0.1:5000/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -87,20 +91,20 @@ const handleSubmitSignUp = async () => {
       });
       const data = await response.json();
       if (response.ok) {
-        ElMessage.success({message:'Regist successfully!',showClose:true});
+        ElMessage.success({message:'注册成功!',showClose:true});
         toggleSignIn(); // 切换登录界面
       } else {
-        ElMessage.error({message:`Regist failed:${data.message}`,showClose:true});
+        ElMessage.error({message:`注册失败:${data.message}`,showClose:true});
       }
     } catch (error) {
-      ElMessage.error({message:'Network errors or server unresponsiveness',showClose:true});
+      ElMessage.error({message:'服务器错误',showClose:true});
     }
   }
 };
 
 const handleSubmitSignIn = async () => {
   try {
-    const response = await fetch('http://localhost:5001/login', {
+    const response = await fetch('http://127.0.0.1:5000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -114,13 +118,13 @@ const handleSubmitSignIn = async () => {
     if (response.ok) {
       store.commit('setUsername', data['username']);
       store.commit('setPassword', data['password']);
-      ElMessage.success({message:'Login successfully!',showClose:true});
+      ElMessage.success({message:'登录成功!',showClose:true});
       router.push({ path: '/service' });
     } else {
-      ElMessage.error({message:`Login failed:${data.message}`,showClose:true});
+      ElMessage.error({message:`登录失败:${data.message}`,showClose:true});
     }
   } catch (error) {
-    ElMessage.error({message:'Network errors or server unresponsiveness',showClose:true});
+    ElMessage.error({message:'服务器错误',showClose:true});
   }
 };
 //检查账号密码格式
@@ -128,7 +132,7 @@ function checkUsername() {
   const usernameReg = /^.{3,12}$/;
   if (!usernameReg.test(signUpUser.value)) {
     isUsernameValid.value = false;
-    usernameMsg.value = "Username should be 3-12 characters";
+    usernameMsg.value = "账号应为3-12个字符";
     return false;
   }
   isUsernameValid.value = true;
@@ -140,7 +144,7 @@ function checkUserPwd() {
   const passwordReg = /^[a-zA-Z0-9!@#$%^&*()_+.,/;'']{6,20}$/;
   if (!passwordReg.test(signUpPassword.value)) {
     isPasswordValid.value = false;
-    userPwdMsg.value = "Password should be 6-20 characters";
+    userPwdMsg.value = "密码应为6-20个字符";
     return false;
   }
   isPasswordValid.value = true;
@@ -215,7 +219,7 @@ function checkUserPwd() {
 }
 
 .overlay {
-  background: url("../assets/2.jpg");
+  background: url("../assets/江郎山.jpg");
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
@@ -339,7 +343,7 @@ p {
 }
 
 .background-container {
-  background-image: url('../assets/2.jpg');
+  background-image: url('../assets/杭州夜景.mp4');
   background-size: cover;
   background-position: center;
   position: fixed;
@@ -349,4 +353,16 @@ p {
   bottom: 0;
   z-index: 0;
  }
+ .background-container video {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 100%;
+  height: 120%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -40%);
+  object-fit: cover; /* 确保视频覆盖整个容器 */
+  z-index: -1; /* 确保视频在背景层 */
+}
 </style>

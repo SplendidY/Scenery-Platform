@@ -4,7 +4,7 @@
 
 <template>
   <div>
-    <h1 class="ht">Welcome&nbsp;&nbsp;to&nbsp;&nbsp;the&nbsp;&nbsp;Smart&nbsp;&nbsp;Tourism&nbsp;&nbsp;Platform !</h1>
+    <h1 class="ht">欢迎来到浙江省智慧文旅平台 !</h1>
   </div>
 </template>
 
@@ -16,7 +16,6 @@
     text-align: center;
     animation:bounce 2s infinite;
     color:white;
-    font-family: Lucida Sans Unicode,Verdana;
   }
   @keyframes bounce{
       0%,100%,20%,50%,80%{

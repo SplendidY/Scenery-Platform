@@ -5,8 +5,8 @@
     <!-- 左上角显隐栏 -->
     <div style="position: absolute; top: 20px; left: 20px; z-index: 999;">
       <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-        <el-radio-button :value="false">expand</el-radio-button>
-        <el-radio-button :value="true">collapse</el-radio-button>
+        <el-radio-button :value="false">显示</el-radio-button>
+        <el-radio-button :value="true">隐藏</el-radio-button>
       </el-radio-group>
     </div>
     <el-menu
@@ -32,12 +32,16 @@
       </el-menu-item>
       <el-menu-item index="3" @click="tfdrawer2">
         <el-icon><ChatDotSquare /></el-icon>
-        <template #title>景点信息</template>
+        <template #title>景区信息</template>
       </el-menu-item>
       <el-menu-item index="4" @click="tfdrawer3">
         <el-icon><Star /></el-icon>
         <template #title>我的收藏</template>
       </el-menu-item>
+      <el-menu-item index="5" @click="tfdrawer6">
+          <el-icon><Route /></el-icon>
+          <template #title>路线存储</template>
+        </el-menu-item>
     </el-menu>
     <!-- 整体 -->
     <el-container style="flex: 1; display: flex; flex-direction: column;">
@@ -60,15 +64,15 @@
         >
           <div class="flex-grow" />
           <el-sub-menu index="1">
-            <template #title>&nbsp;&nbsp;&nbsp;&nbsp;<el-icon><Switch /></el-icon>Layer Select&nbsp;&nbsp;&nbsp;&nbsp;</template>
+            <template #title>&nbsp;&nbsp;&nbsp;&nbsp;<el-icon><Switch /></el-icon>图层选择&nbsp;&nbsp;&nbsp;&nbsp;</template>
             <el-sub-menu index="1-1">
               <template #title>OpenStreetMap</template>
-              <el-menu-item index="1-1-1" @click="SwitchLayer('1-1-1')">tile.openstreetmap(default)</el-menu-item>
-              <el-menu-item index="1-1-2" @click="SwitchLayer('1-1-2')">dark_all</el-menu-item>
-              <el-menu-item index="1-1-3" @click="SwitchLayer('1-1-3')">light_all</el-menu-item>
+              <el-menu-item index="1-1-1" @click="SwitchLayer('1-1-1')">默认openstreetmap底图</el-menu-item>
+              <el-menu-item index="1-1-2" @click="SwitchLayer('1-1-2')">黑夜</el-menu-item>
+              <el-menu-item index="1-1-3" @click="SwitchLayer('1-1-3')">白天</el-menu-item>
             </el-sub-menu>
-            <el-menu-item index="1-2">Gaode Map</el-menu-item>
-            <el-menu-item index="1-3">Tian Map</el-menu-item>
+            <el-menu-item index="1-2">高德地图</el-menu-item>
+            <el-menu-item index="1-3">天地图</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <!-- 滚动栏 -->
@@ -79,7 +83,7 @@
                 </li>
               </ul>
             </el-scrollbar>
-            <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景点名称'></el-input>
+            <el-input v-model="scenery" :prefix-icon="Search" @input="filterLocations" @focus="isFocused = true" @blur="handleBlur" placeholder='输入目的地景区名称'></el-input>
             <el-button style="margin-left: 10px;" type="primary" @click="getjw"><el-icon><Position /></el-icon>导航</el-button>
           </el-menu-item>
         </el-menu>
@@ -88,38 +92,24 @@
             <el-button class="avatar-button" @click="drawer = true">
               <el-avatar :size="36" class="mr-3" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
             </el-button>
-            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 30px; font-size: 16px;"><el-icon style="position: relative; right: 10px;"><SwitchButton /></el-icon>log out</el-button>
+            <el-button type="primary" @click="dialogVisible = !dialogVisible" style="height: 30px; font-size: 16px;"><el-icon style="position: relative; right: 10px;"><SwitchButton /></el-icon>退出</el-button>
         </div>
       </el-footer>
     </el-container>
     <!-- 退出按钮 -->
     <el-dialog v-model="dialogVisible" title="Sure ?" width="500">
-      <span>Sure to log out ?</span>
+      <span>确认退出 ?</span>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogVisible = false">No</el-button>
+          <el-button @click="dialogVisible = false">不,我再想想</el-button>
           <router-link to="/login">
             <el-button type="primary" style="margin-left: 10px;" @click="dialogVisible = false;deletejw()">
-              Sure
+              确认
             </el-button>
           </router-link>
         </div>
       </template>
-    <!-- 信息栏 -->
     </el-dialog>
-    <el-descriptions
-      v-show="userinfo"
-      title="Vertical list with border"
-      direction="vertical"
-      :column="4"
-      :size="size"
-      style="position: absolute;right:1%;bottom: 20%;width: 25%;background-color: aliceblue;z-index: 10; border: 1px solid #ebeef5; border-radius: 4px; padding: 20px;"
-      border
-    >
-      <el-descriptions-item label="Username">{{ store.state.username }}</el-descriptions-item>
-      <el-descriptions-item label="Password">{{ store.state.password }}</el-descriptions-item>
-      <el-descriptions-item label="Place" :span="2">Hangzhou</el-descriptions-item>
-    </el-descriptions>
     <!-- 侧边栏 -->
     <el-drawer v-model="drawer" title="I am the title" :with-header="false" size="11%">
       <div style="display: flex;align-items: center;">
@@ -149,7 +139,6 @@
     </el-drawer>  
     <el-drawer 
     v-model="drawer2" 
-    title="I am the title" 
     style="overflow: auto;"
     :before-close="handleClose"
     >
@@ -158,7 +147,7 @@
           placeholder="请输入感兴趣的地点"  
           :prefix-icon="Search">
         </el-input>
-        <el-button style="margin-left: 10px;" type="primary" >Check</el-button>
+        <el-button style="margin-left: 10px;" type="primary" ><el-icon><Position /></el-icon>导航</el-button>
       </template>
       <template #default>
         <div class="spot-photo">
@@ -168,63 +157,63 @@
         </div>
         <div style="display: flex; justify-content: space-between;">
           <div>
-              <h3>Scenic Spot Name</h3>
+              <h3>景区名称</h3>
               <p>{{ name }}</p>
           </div>
           <el-button class="star" type="warning" :icon="Star" circle @click="addFavorite(name)" style="align-self: center"></el-button>          
         </div>
       <div>
-        <h4>Introduction</h4>
+        <h4>景区介绍</h4>
         <p>
         <!-- Description of the scenic spot -->
          {{ introduction }}
         </p>
       </div>
       <div>
-        <h4>Location</h4>
+        <h4>景区位置</h4>
         <p>{{ city }}</p>
       </div>
       <div>
-        <h4>Opening Hours</h4>
+        <h4>景区开放时间</h4>
         <p>
-        Monday to Sunday: 9:00 AM - 6:00 PM
+        周一至周日: 9:00 AM - 6:00 PM
         </p>
       </div>
       <div>
         <h4>
-          Average Rate
+          平均得分
         </h4>
         <el-rate
         v-model="averagescore"
-        :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
+        :texts="['糟糕', '令人失望', '一般', '不错', '完美']"
         show-text
         disabled
         score-template="{value} points"
         />
         <h4>
-          Remarks
+          评论区
         </h4>
         <p>{{ remarks1 }}</p>
         <p>{{ remarks2 }}</p>
         <p>{{ remarks3 }}</p>
       </div> 
       <h4>
-        Your Rate
+        你的评分
       </h4>
       <div>
         <el-rate
         v-model="userscore"
-        :texts="['oops', 'disappointed', 'normal', 'good', 'great']"
+        :texts="['糟糕', '令人失望', '一般', '不错', '完美']"
         show-text
         />
         <h4>
-          Your Remark
+          你的评论
         </h4>
           <el-input
             v-model="userrmk"
             maxlength="30"
             style="width: 240px; margin: 20px 0"
-            placeholder="Please input"
+            placeholder="请输入评论"
             show-word-limit
             type="text"
           />
@@ -315,8 +304,10 @@ const closestSpots = ref([]);
 const chartContainer = ref(null);
 const chartVisible = ref(false);
 const cityname = ref()
+const theroute = ref();
+
 const cityData = {
-  '杭州市': { '5A': 2, '4A': 20, '3A': 72 },
+  '杭州市': { '5A': 3, '4A': 20, '3A': 71 },
   '宁波市': { '5A': 1, '4A': 18, '3A': 59 },
   '温州市': { '5A': 1, '4A': 16, '3A': 55 },
   '台州市': { '5A': 2, '4A': 18, '3A': 70 },
@@ -363,8 +354,12 @@ const handleSubmit = async () => {
   }
 };
 const tfdrawer2 = () => {
-  if( name.value != null) {
-    drawer2.value = true;
+  try{
+    if( name.value != null) {
+      drawer2.value = true;
+    }
+  }catch(error){
+    ElMessage.error('请输入景区名称');
   }
 }
 const tfdrawer3 = () => {
@@ -373,7 +368,8 @@ const tfdrawer3 = () => {
   }
 }
 const tfdrawer4 = () => {
-  const searchName = name.value.trim();
+  try{
+    const searchName = name.value.trim();
   if (searchName) {
     search_closest_spots(searchName).then(() => {
       drawer5.value = true;
@@ -382,12 +378,15 @@ const tfdrawer4 = () => {
     });
   } else {
     console.warn("Name is null or empty.");
+  }}
+  catch(error){
+    ElMessage.error('请输入景区名称')
   }
 };
 
 const fetchFavorites = async () => {
   try {
-    const response = await axios.get('http://localhost:5001/get_favorites', {
+    const response = await axios.get('http://127.0.0.1:5000/user/get_favorites', {
       params: { username: username.value }
     });
     if (response.status === 200) {
@@ -401,7 +400,7 @@ const fetchFavorites = async () => {
 
 const addFavorite = async (spotName) => {
   try {
-    const response = await axios.post('http://localhost:5001/add_favorite', {
+    const response = await axios.post('http://127.0.0.1:5000/user/add_favorite', {
       username: store.state.username,
       spotname: spotName,
     });
@@ -418,7 +417,7 @@ const addFavorite = async (spotName) => {
 const removeFavorite = async (index) => {
   try {
     const spotName = favor.value[index];
-    const response = await axios.post('http://localhost:5001/remove_favorite', {
+    const response = await axios.post('http://127.0.0.1:5000/user/remove_favorite', {
       username: store.state.username,
       spotname: spotName,
     });
@@ -476,8 +475,9 @@ const getjw = () => {
       store.commit('setendw', endw);
       route();
     } else {
-      console.error('Invalid geometry format');
+      ElMessage.error('景区名称错误');
     }
+    ElMessage.success('导航成功')
     introduction.value = item.INTRODUCTION || '暂无信息';
     name.value = item.NAME || '暂无信息';
     city.value = item.CITY || '暂无信息';
@@ -488,7 +488,7 @@ const getjw = () => {
     // county.value = item.COUNTY || '暂无信息';
   } 
   else {
-    console.error('Name not found');
+    ElMessage.error('景区名称错误');
   }
 };
 
@@ -501,7 +501,7 @@ const submitComment = async () => {
       item.COMMENT.unshift(userrmk.value);
 
       // 发送更新后的数据到后端
-      const response = await axios.post('http://localhost:5001/update-location', locations.value, {
+      const response = await axios.post('http://127.0.0.1:5000/recommend/update_location', locations.value, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -516,7 +516,7 @@ const submitComment = async () => {
         console.error('更新评论时出错:', response.data.error);
       }
     } else {
-      console.error('景点未找到');
+      console.error('景区未找到');
     }
   } catch (error) {
     console.error('更新评论时出错:', error);
@@ -525,7 +525,7 @@ const submitComment = async () => {
 
 const search_closest_spots = async (searchName) => {
   try {
-    const response = await fetch('http://localhost:5001/search_closest_spots', {
+    const response = await fetch('http://127.0.0.1:5000/recommend/search_closest_spots', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -594,6 +594,7 @@ const initialChart = (n) => {
   }
 
   chartContainer.value._myChart = echarts.init(chartContainer.value);
+  ElMessage.success('图表绘制成功')
   if (n == 1) {
     const option = {
       title: {
@@ -604,7 +605,7 @@ const initialChart = (n) => {
         trigger: 'item'
       },
       series: [{
-        name: '景点数量',
+        name: '景区数量',
         type: 'pie',
         radius: '50%',
         data: [
@@ -643,7 +644,7 @@ const initialChart = (n) => {
           trigger: 'item'
         },
         series: [{
-          name: '景点数量',
+          name: '景区数量',
           type: 'pie',
           radius: '50%',
           data: [

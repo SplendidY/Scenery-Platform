@@ -13,6 +13,7 @@
     "axios": "^1.6.8",
     "echarts": "^5.5.0",
     "element-plus": "^2.7.3",
+    "html2canvas": "^1.4.1",
     "vite-plugin-cesium": "^1.2.22",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2",

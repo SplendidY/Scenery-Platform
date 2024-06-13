@@ -39,7 +39,7 @@
         <template #title>我的收藏</template>
       </el-menu-item>
       <el-menu-item index="5" @click="tfdrawer6">
-          <el-icon><Route /></el-icon>
+          <el-icon><PictureFilled /></el-icon>
           <template #title>路线存储</template>
         </el-menu-item>
     </el-menu>
@@ -72,7 +72,7 @@
               <el-menu-item index="1-1-3" @click="SwitchLayer('1-1-3')">白天</el-menu-item>
             </el-sub-menu>
             <el-menu-item index="1-2">高德地图</el-menu-item>
-            <el-menu-item index="1-3">天地图</el-menu-item>
+            <el-menu-item index="1-3">Geoserver底图</el-menu-item>
           </el-sub-menu>
           <el-menu-item index="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <!-- 滚动栏 -->
@@ -271,7 +271,7 @@ import { route } from '../jses/route';
 import axios from 'axios';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
-import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch } from '@element-plus/icons-vue';
+import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch,PictureFilled } from '@element-plus/icons-vue';
 
 const store = useStore();
 const drawer = ref(false);

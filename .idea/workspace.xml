@@ -6,16 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="b0c4dd5c-9dbe-43b2-8fef-19a1df68955a" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/instance/users.db" beforeDir="false" afterPath="$PROJECT_DIR$/backend/instance/users.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/user.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Loginregist.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Loginregist.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/blueprints/recommend.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/blueprints/recommend.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Service.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Service.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/jses/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/jses/route.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/resources/data2.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/resources/data2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/jses/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/jses/init.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +44,7 @@
   &quot;keyToString&quot;: {
     &quot;Python.user.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;spl&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Desktop/cs/GISapp/工作&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -103,6 +98,8 @@
       <workItem from="1718252890541" duration="1245000" />
       <workItem from="1718262852970" duration="175000" />
       <workItem from="1718266820534" duration="6092000" />
+      <workItem from="1718304044914" duration="1293000" />
+      <workItem from="1718306639165" duration="1412000" />
     </task>
     <servers />
   </component>

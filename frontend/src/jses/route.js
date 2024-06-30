@@ -56,7 +56,7 @@ async function drawRoute(startLng, startLat, endLng, endLat) {
       width: 10,
       material: new Cesium.PolylineGlowMaterialProperty({
         glowPower: 0.4,
-        color: Cesium.Color.GREEN,
+        color: Cesium.Color.PURPLE,
       }),
     },
   });

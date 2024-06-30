@@ -1,4 +1,5 @@
 <template>
+  <link rel="stylesheet" type="text/css" href="service.css"></link>
   <!-- 整个div -->
   <div style="height: 100vh; display: flex; flex-direction: column; overflow: hidden;">
     <div id="5A" ref="chartContainer" style="width: 600px; height: 400px; position: absolute; z-index: 1000; background-color: #ebeef5; display: none; left: 64%; top:50%"></div>
@@ -26,7 +27,7 @@
         <el-button style="position: relative; left: 10px; width: 80px;" type="primary" @click="closeecharts"><el-icon><Close /></el-icon>关闭</el-button>
         </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="2" @click="tfdrawer4">
+      <el-menu-item index="2" @click="tfdrawer5">
         <el-icon><Opportunity /></el-icon>
         <template #title>个性化推荐</template>
       </el-menu-item>
@@ -40,8 +41,12 @@
       </el-menu-item>
       <el-menu-item index="5" @click="loadmap">
           <el-icon><CameraFilled /></el-icon>
-          <template #title>路线存储</template>
+          <template #title>截屏保存路线</template>
         </el-menu-item>
+      <el-menu-item index="6" @click="tfdrawer6">
+        <el-icon><Upload /></el-icon>
+        <template #title>存储路线到geoserver</template>
+      </el-menu-item>
     </el-menu>
     <!-- 整体 -->
     <el-container style="flex: 1; display: flex; flex-direction: column;">
@@ -257,6 +262,44 @@
       <div class="empty-favorites">暂无推荐地点</div>
     </template>
   </el-drawer>
+  <el-drawer 
+    v-model="drawer6"
+    title="将当前路线存储到geoserver"
+     >
+    <template v-if="routeArray.length!=0">
+        <el-form :model="routeform" label-width="auto" style="max-width: 500px">
+          <el-form-item label="工作空间" style="font-weight: 700;">
+            <el-input v-model="routeform.workspace" placeholder="请输入工作空间名称" type="workspace" />
+          </el-form-item>
+          <el-form-item label="存储仓库" style="font-weight: 700;">
+            <el-input v-model="routeform.datasource" placeholder="请输入存储仓库名称" type="datastore" />
+          </el-form-item>
+        </el-form>
+        <div id="createjson">
+          <el-button id="form_geojson" type="primary" @click="myjson=create_json()" style="width:100px"><el-icon><Check/></el-icon>确定</el-button> 
+        </div>
+        <div id="uploadjson">
+          <el-button id="submit_json" type="primary" style="width:150px"   @click="upload_geojson(myjson)" ><el-icon><Upload/></el-icon>上传路线数据</el-button> 
+        </div>
+        <!-- <div id="upload_situation">
+          <template v-if="upload_success==undefined && is_uploading==true">
+            <el-icon><Refresh/></el-icon>正在上传...
+          </template>
+          <template v-else-if="upload_success==true">
+            <el-icon><SuccessFilled/></el-icon>上传成功！
+          </template>
+          <template v-else-if="upload_success==false">
+            <el-icon><WarningFilled/></el-icon>上传失败，请联系管理员
+          </template>
+        </div> -->
+        <div id="to_geoserver">
+          <a href="http://localhost:8080/geoserver" target="_blank"><u>前往geoserver查看</u></a>
+        </div>
+    </template>
+    <template v-else>
+      <div class="empty-route">暂无路线</div>
+    </template>
+  </el-drawer>
   </div>
 </template>
 
@@ -267,19 +310,22 @@ import { ref,computed,onMounted } from 'vue'
 import Cesium from './Cesium.vue'
 import { SwitchLayer } from '../jses/ditu'
 import { useStore } from 'vuex';
-import { route } from '../jses/route';
+import { route,routeArray } from '../jses/route';
 import axios from 'axios';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
 import html2canvas from 'html2canvas';
-import { Edit,ChatDotSquare,EditPen,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch,CameraFilled } from '@element-plus/icons-vue';
+import { Edit,ChatDotSquare,Search,Upload,Star,Opportunity,Close,Position,SwitchButton,Switch,CameraFilled,Check,Refresh,SuccessFilled,WarningFilled } from '@element-plus/icons-vue';
+import { warn } from 'vue';
 
 const store = useStore();
+//drawers
 const drawer = ref(false);
 const drawer2 = ref(false);
 const drawer3 = ref(false);
-const drawer4 = ref(false);
 const drawer5 = ref(false);
+const drawer6 = ref(false);
+
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
@@ -294,6 +340,7 @@ const userscore = ref(0);
 const averagescore = ref(0);
 const userrmk = ref();
 const name = ref();
+const myjson = ref();
 const introduction = ref();
 const city = ref();
 const scenery = ref();
@@ -304,8 +351,7 @@ const favor = ref([]);
 const closestSpots = ref([]);
 const chartContainer = ref(null);
 const chartVisible = ref(false);
-const cityname = ref()
-const theroute = ref();
+const cityname = ref();
 
 const cityData = {
   '杭州市': { '5A': 3, '4A': 20, '3A': 71 },
@@ -325,6 +371,15 @@ const form = ref({
   newPassword: '',
   confirmnewPassword: ''
 });
+const routeform = ref({
+  workspace:'',
+  datasource:'',
+  layer:''
+})
+
+//let is_uploading = false;
+//let upload_success = undefined;
+
 const handleSubmit = async () => {
   if (form.value.newPassword !== form.value.confirmNewPassword) {
     ElMessage.error('新密码和确认密码不匹配，请重新输入');
@@ -332,7 +387,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post('http://localhost:5001/change_password', {
+    const response = await axios.post('http://127.0.0.1:5000/user/change_password', {
       user_name: store.state.username,
       old_password: form.value.oldPassword,
       new_password: form.value.newPassword,
@@ -368,7 +423,7 @@ const tfdrawer3 = () => {
     drawer3.value = true;
   }
 }
-const tfdrawer4 = () => {
+const tfdrawer5 = () => {
   try{
     const searchName = name.value.trim();
   if (searchName) {
@@ -384,6 +439,9 @@ const tfdrawer4 = () => {
     ElMessage.error('请输入景区名称')
   }
 };
+const tfdrawer6 = () => {
+  drawer6.value = true;
+} 
 
 const fetchFavorites = async () => {
   try {
@@ -545,6 +603,51 @@ const search_closest_spots = async (searchName) => {
 const deletejw = () => {
   store.commit('clearUser');
 }
+
+//发送geojson到后端
+const upload_geojson = async (data) => {
+  axios.post('http://127.0.0.1:5000/geoserver/upload-geojson', data, {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  })
+  .then(response => {
+      console.log('Success:', response.data);
+      alert("路线上传成功！")
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      alert("路线上传失败！同一个工作空间中不能有相同存储仓库名！")
+  });
+}
+            
+const create_json = () =>{
+  return {
+    "workspace": routeform.value.workspace,
+    "datastore": routeform.value.datasource,
+    "layer_name": routeform.value.layer,
+    "geojson_data": create_geojson(routeArray)
+  };
+};
+
+const create_geojson = (coords) => {
+  return {
+      type: "FeatureCollection",
+      features: [
+          {
+              type: "Feature",
+              geometry: {
+                  type: "LineString",
+                  coordinates: coords
+              },
+              properties: {
+                  name: "Sample LineString"
+              }
+          }
+      ]
+  };
+};
+
 
 const tfecharts = (n) => {
   if ((n == 2)&&(cityname.value == undefined)) {
@@ -771,6 +874,35 @@ html, body {
 
 .drawer5-item:hover {
   background-color:skyblue; /* 更改为你想要的悬浮背景颜色 */
+}
+
+#createjson{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#uploadjson{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 240px;
+}
+
+#to_geoserver{
+  position: absolute;
+  left: 75%;
+  transform: translateX(-50%);
+  top: 340px;
+  color: gray;
+  font-size: 14px;
+}
+
+#upload_situation{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 290px;
 }
 
 </style>

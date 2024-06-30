@@ -92,3 +92,22 @@ def get_favorites():
     return jsonify({'error': 'User not found'}), 404
 
 
+# 修改密码功能
+@user.route('/change_password', methods=['POST'])
+def change_password():
+    data = request.get_json()
+    username = data.get('user_name')
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+    confirm_new_password = data.get('confirm_new_password')
+    user = User.query.filter_by(username=username).first()
+    if user:
+        if not user.check_password(old_password):
+            return jsonify({"error": "Old password is incorrect"}), 401
+    if new_password != confirm_new_password:
+        return jsonify({"error": "New passwords do not match"}), 422
+    
+    user.set_password(new_password)
+    db.session.commit()
+
+    return jsonify({"message": "Password updated successfully"}), 200

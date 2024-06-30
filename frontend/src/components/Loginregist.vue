@@ -23,7 +23,7 @@
             <p class="form__title">登录</p>
             <input type="text" v-model="signInUser" placeholder="账号" class="input" />
             <input type="password" v-model="signInPassword" placeholder="密码" class="input" />
-            <a href="https://www.youlai.cn/yyk/article/322086.html" class="link">忘记密码？</a>
+            <a href="https://www.youlai.cn/yyk/article/322086.html" target="_blank" class="link">忘记密码？</a>
             <button type="submit" class="btn" id="inbtn">登录</button>
           </form>
         </div>

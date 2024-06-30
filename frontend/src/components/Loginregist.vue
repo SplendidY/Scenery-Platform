@@ -1,10 +1,6 @@
 <template>
   <div>
     <div class="background-container">
-      <video autoplay muted loop>
-        <source src="../assets/千岛湖.mp4" type="video/mp4" />
-        您的浏览器不支持HTML5视频标签。
-      </video>
       <Header></Header>
       <div
         class="container"
@@ -258,7 +254,7 @@ function checkUserPwd() {
 }
 
 .overlay {
-  background: url("../assets/江郎山.jpg");
+  background: url("../assets/西湖.jpg");
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
@@ -383,7 +379,7 @@ p {
 }
 
 .background-container {
-  background-image: url("../assets/杭州夜景.mp4");
+  background: url("../assets/3.jpg");
   background-size: cover;
   background-position: center;
   position: fixed;

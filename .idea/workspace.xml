@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b0c4dd5c-9dbe-43b2-8fef-19a1df68955a" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Service.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Service.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/jses/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/jses/route.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/resources/data2.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/resources/data2.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +41,7 @@
     "Python.recommend.executor": "Run",
     "Python.user.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "spl",
     "last_opened_file_path": "D:/Desktop/cs/GISapp/Scenery-platform",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -101,6 +98,7 @@
       <workItem from="1718304044914" duration="1293000" />
       <workItem from="1718306639165" duration="2291000" />
       <workItem from="1719734688994" duration="1622000" />
+      <workItem from="1719747076315" duration="88000" />
     </task>
     <servers />
   </component>

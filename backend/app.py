@@ -1,5 +1,4 @@
 from flask import Flask
-from blueprints.geoserver import geoserver
 from blueprints.recommend import recommend
 from blueprints.user import user
 from blueprints.user import db
@@ -11,7 +10,6 @@ CORS(app)
 app.config.from_object(Config)
 
 app.register_blueprint(recommend, url_prefix='/recommend')
-app.register_blueprint(geoserver, url_prefix='/geoserver')
 app.register_blueprint(user, url_prefix='/user')
 
 db.init_app(app)

@@ -26,10 +26,42 @@
         <el-button style="position: relative; left: 10px; width: 80px;" type="primary" @click="closeecharts"><el-icon><Close /></el-icon>关闭</el-button>
         </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="2" @click="tfdrawer4">
-        <el-icon><Opportunity /></el-icon>
-        <template #title>个性化推荐</template>
-      </el-menu-item>
+      <el-sub-menu index="2" @click="tfdrawer4">
+        <template #title>
+          <el-icon><Opportunity /></el-icon>
+          <span>个性化推荐</span>
+        </template>
+          <el-menu-item index="2-1" >
+            <template v-if="closestSpots.length > 0">
+              <div>
+                <p style="margin: 0; cursor: pointer;" @click="routetospot(closestSpots[0])">{{ closestSpots[0] }}</p>
+              </div>
+            </template>
+            <template v-else>
+              <div class="empty-favorites">暂无推荐地点</div>
+            </template>
+          </el-menu-item>
+          <el-menu-item index="2-2" >
+            <template v-if="closestSpots.length > 0">
+              <div>
+                <p style="margin: 0; cursor: pointer;" @click="routetospot(closestSpots[1])">{{ closestSpots[1] }}</p>
+              </div>
+            </template>
+            <template v-else>
+              <div class="empty-favorites">暂无推荐地点</div>
+            </template>
+          </el-menu-item>
+          <el-menu-item index="2-3" >
+            <template v-if="closestSpots.length > 0">
+              <div>
+                <p style="margin: 0; cursor: pointer;" @click="routetospot(closestSpots[2])">{{ closestSpots[2] }}</p>
+              </div>
+            </template>
+            <template v-else>
+              <div class="empty-favorites">暂无推荐地点</div>
+            </template>
+          </el-menu-item>
+      </el-sub-menu>
       <el-menu-item index="3" @click="tfdrawer2">
         <el-icon><ChatDotSquare /></el-icon>
         <template #title>景区信息</template>
@@ -383,7 +415,6 @@ const tfdrawer4 = () => {
     const searchName = name.value.trim();
   if (searchName) {
     search_closest_spots(searchName).then(() => {
-      drawer5.value = true;
     }).catch(error => {
       console.error('Error fetching closest spots:', error);
     });

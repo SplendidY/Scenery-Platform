@@ -565,7 +565,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post("http://localhost:5001/change_password", {
+    const response = await axios.post("http://localhost:5000/change_password", {
       user_name: store.state.username,
       old_password: form.value.oldPassword,
       new_password: form.value.newPassword,

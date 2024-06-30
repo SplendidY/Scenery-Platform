@@ -155,30 +155,33 @@
             <img src="../assets/西湖.jpg" style="max-width: 100%;" alt="Scenic Spot Image" />
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between;">
-          <div>
-              <h3>景区名称</h3>
-              <p>{{ name }}</p>
-          </div>
+        <div>
+          <div style="display: flex; justify-content: space-between;">
+            <div>
+                <h3>{{ name }}</h3>
+            </div>
           <el-button class="star" type="warning" :icon="Star" circle @click="addFavorite(name)" style="align-self: center"></el-button>          
+          </div>
+          <div>
+            <h4>景区介绍</h4>
+            <p>
+            <!-- Description of the scenic spot -->
+            {{ introduction }}
+            </p>
+          </div>
+          <el-divider />
+          <div>
+            <h4>景区位置</h4>
+            <p>{{ city }}</p>
+          </div>
+          <div>
+            <h4>景区开放时间</h4>
+            <p>
+            周一至周日: 9:00 AM - 6:00 PM
+            </p>
+          </div>
+          <el-divider />
         </div>
-      <div>
-        <h4>景区介绍</h4>
-        <p>
-        <!-- Description of the scenic spot -->
-         {{ introduction }}
-        </p>
-      </div>
-      <div>
-        <h4>景区位置</h4>
-        <p>{{ city }}</p>
-      </div>
-      <div>
-        <h4>景区开放时间</h4>
-        <p>
-        周一至周日: 9:00 AM - 6:00 PM
-        </p>
-      </div>
       <div>
         <h4>
           平均得分
@@ -190,37 +193,44 @@
         disabled
         score-template="{value} points"
         />
+        <el-divider />
         <h4>
           评论区
         </h4>
-        <p>{{ remarks1 }}</p>
-        <p>{{ remarks2 }}</p>
-        <p>{{ remarks3 }}</p>
+        <div>
+          <p><span style="color: #017BB0;">匿名 </span>{{ remarks1 }}</p>
+          <p><span style="color: #017BB0;">匿名 </span>{{ remarks2 }}</p>
+          <p><span style="color: #017BB0;">匿名 </span>{{ remarks3 }}</p>
+        </div>
+        <el-divider />
       </div> 
-      <h4>
-        你的评分
-      </h4>
-      <div>
-        <el-rate
-        v-model="userscore"
-        :texts="['糟糕', '令人失望', '一般', '不错', '完美']"
-        show-text
-        />
+      <div style="background-color: #FFFFFF; padding:2px,2px,3px,2px;">
         <h4>
-          你的评论
+        添加评分
         </h4>
-          <el-input
-            v-model="userrmk"
-            maxlength="30"
-            style="width: 240px; margin: 20px 0"
-            placeholder="请输入评论"
-            show-word-limit
-            type="text"
+        <div>
+          <el-rate
+          v-model="userscore"
+          :texts="['糟糕', '令人失望', '一般', '不错', '完美']"
+          show-text
           />
-          <el-button  type="primary" style="position: relative; left:10px;">
-            Upload<el-icon class="el-icon--right" @click="submitComment"><Upload/></el-icon>
-          </el-button>
-      </div>    
+          <el-divider />
+          <h4>
+            添加评论
+          </h4>
+            <el-input
+              v-model="userrmk"
+              maxlength="30"
+              style="width: 240px; margin: 20px 0"
+              placeholder="请输入评论"
+              show-word-limit
+              type="text"
+            />
+            <el-button  type="primary" style="position: relative; left:10px;">
+              Upload<el-icon class="el-icon--right" @click="submitComment"><Upload/></el-icon>
+            </el-button>
+        </div>
+      </div>
       </template>
     </el-drawer>
      <!--collection-->

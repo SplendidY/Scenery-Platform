@@ -6,12 +6,12 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted } from 'vue';
-import { init,getViewer } from '../jses/init'
-import { route } from '../jses/route'
+import { onBeforeMount, onMounted } from "vue";
+import { init, getViewer } from "../jses/init";
+import { route } from "../jses/route";
 
 onBeforeMount(() => {
-  console.log('a');
+  console.log("a");
 });
 
 onMounted(() => {
@@ -19,7 +19,6 @@ onMounted(() => {
   panel.style.display = "none";
   init();
 });
-
 </script>
 
 <style>

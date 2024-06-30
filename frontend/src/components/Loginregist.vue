@@ -2,18 +2,37 @@
   <div>
     <div class="background-container">
       <video autoplay muted loop>
-          <source src="../assets/千岛湖.mp4" type="video/mp4">
-          您的浏览器不支持HTML5视频标签。
+        <source src="../assets/千岛湖.mp4" type="video/mp4" />
+        您的浏览器不支持HTML5视频标签。
       </video>
       <Header></Header>
-      <div class="container" :class="{ 'right-panel-active': isRightPanelActive }">
+      <div
+        class="container"
+        :class="{ 'right-panel-active': isRightPanelActive }"
+      >
         <div class="container__form container--signup">
           <form class="form" @submit.prevent="handleSubmitSignUp">
             <p class="form__title">注册</p>
-            <input type="text" v-model="signUpUser" placeholder="账号(3-12个字符)" class="input" @blur="checkUsername()" />
-            <span :class="{ 'error-text': !isUsernameValid }">{{ usernameMsg }}</span>
-            <input type="password" v-model="signUpPassword" placeholder="密码(6-20个字符)" class="input" @blur="checkUserPwd()" />
-            <span :class="{ 'error-text': !isPasswordValid }">{{ userPwdMsg }}</span>
+            <input
+              type="text"
+              v-model="signUpUser"
+              placeholder="账号(3-12个字符)"
+              class="input"
+              @blur="checkUsername()"
+            />
+            <span :class="{ 'error-text': !isUsernameValid }">{{
+              usernameMsg
+            }}</span>
+            <input
+              type="password"
+              v-model="signUpPassword"
+              placeholder="密码(6-20个字符)"
+              class="input"
+              @blur="checkUserPwd()"
+            />
+            <span :class="{ 'error-text': !isPasswordValid }">{{
+              userPwdMsg
+            }}</span>
             <button type="submit" class="btn">注册</button>
           </form>
         </div>
@@ -21,9 +40,24 @@
         <div class="container__form container--signin">
           <form class="form" @submit.prevent="handleSubmitSignIn">
             <p class="form__title">登录</p>
-            <input type="text" v-model="signInUser" placeholder="账号" class="input" />
-            <input type="password" v-model="signInPassword" placeholder="密码" class="input" />
-            <a href="https://www.youlai.cn/yyk/article/322086.html" target="_blank" class="link">忘记密码？</a>
+            <input
+              type="text"
+              v-model="signInUser"
+              placeholder="账号"
+              class="input"
+            />
+            <input
+              type="password"
+              v-model="signInPassword"
+              placeholder="密码"
+              class="input"
+            />
+            <a
+              href="https://www.youlai.cn/yyk/article/322086.html"
+              target="_blank"
+              class="link"
+              >忘记密码？</a
+            >
             <button type="submit" class="btn" id="inbtn">登录</button>
           </form>
         </div>
@@ -33,7 +67,9 @@
           <div class="overlay">
             <div class="overlay__panel overlay--left">
               <router-link to="/login">
-                <button class="btn" @click="toggleSignIn" id="changein">登录</button>
+                <button class="btn" @click="toggleSignIn" id="changein">
+                  登录
+                </button>
               </router-link>
             </div>
             <div class="overlay__panel overlay--right">
@@ -49,21 +85,21 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex';
-import Header from './Header.vue'
-import { ElMessage } from 'element-plus'
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import Header from "./Header.vue";
+import { ElMessage } from "element-plus";
 
 let isRightPanelActive = ref(false);
-let signUpUser = ref('');
-let signUpPassword = ref('');
-let signInPassword = ref('');
-let signInUser = ref('');
+let signUpUser = ref("");
+let signUpPassword = ref("");
+let signInPassword = ref("");
+let signInUser = ref("");
 let isUsernameValid = ref(false);
 let isPasswordValid = ref(false);
-let usernameMsg = ref('');
-let userPwdMsg = ref('');
+let usernameMsg = ref("");
+let userPwdMsg = ref("");
 
 const router = useRouter();
 const store = useStore();
@@ -79,52 +115,55 @@ const toggleSignUp = () => {
 const handleSubmitSignUp = async () => {
   if (isUsernameValid.value && isPasswordValid.value) {
     try {
-      const response = await fetch('http://127.0.0.1:5000/user/register', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:5000/user/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           username: signUpUser.value,
-          password: signUpPassword.value
-        })
+          password: signUpPassword.value,
+        }),
       });
       const data = await response.json();
       if (response.ok) {
-        ElMessage.success({message:'注册成功!',showClose:true});
+        ElMessage.success({ message: "注册成功!", showClose: true });
         toggleSignIn(); // 切换登录界面
       } else {
-        ElMessage.error({message:`注册失败:${data.message}`,showClose:true});
+        ElMessage.error({
+          message: `注册失败:${data.message}`,
+          showClose: true,
+        });
       }
     } catch (error) {
-      ElMessage.error({message:'服务器错误',showClose:true});
+      ElMessage.error({ message: "服务器错误", showClose: true });
     }
   }
 };
 
 const handleSubmitSignIn = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:5000/user/login', {
-      method: 'POST',
+    const response = await fetch("http://127.0.0.1:5000/user/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         username: signInUser.value,
-        password: signInPassword.value
-      })
+        password: signInPassword.value,
+      }),
     });
     const data = await response.json();
     if (response.ok) {
-      store.commit('setUsername', data['username']);
-      store.commit('setPassword', data['password']);
-      ElMessage.success({message:'登录成功!',showClose:true});
-      router.push({ path: '/service' });
+      store.commit("setUsername", data["username"]);
+      store.commit("setPassword", data["password"]);
+      ElMessage.success({ message: "登录成功!", showClose: true });
+      router.push({ path: "/service" });
     } else {
-      ElMessage.error({message:`登录失败:${data.message}`,showClose:true});
+      ElMessage.error({ message: `登录失败:${data.message}`, showClose: true });
     }
   } catch (error) {
-    ElMessage.error({message:'服务器错误',showClose:true});
+    ElMessage.error({ message: "服务器错误", showClose: true });
   }
 };
 //检查账号密码格式
@@ -151,14 +190,14 @@ function checkUserPwd() {
   userPwdMsg.value = "OK";
   return true;
 }
-
 </script>
 
 
 <style scoped>
 .container {
   border-radius: 0.7rem;
-  box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25), 0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
+  box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25),
+    0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
   height: 500px;
   max-width: 900px;
   overflow: hidden;
@@ -293,7 +332,7 @@ function checkUserPwd() {
 }
 
 .form {
-  background-color:white;
+  background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -317,7 +356,8 @@ function checkUserPwd() {
   color: #008997;
 }
 
-p,span {
+p,
+span {
   color: #008997;
 }
 p {
@@ -325,7 +365,7 @@ p {
 }
 .link {
   color: #008997;
-  text-decoration:none;
+  text-decoration: none;
 }
 
 .error-text {
@@ -333,17 +373,17 @@ p {
 }
 
 #inbtn {
-  position:relative;
+  position: relative;
   margin-top: 10px;
 }
 
-#changein{
+#changein {
   position: relative;
   margin-bottom: 5px;
 }
 
 .background-container {
-  background-image: url('../assets/杭州夜景.mp4');
+  background-image: url("../assets/杭州夜景.mp4");
   background-size: cover;
   background-position: center;
   position: fixed;
@@ -352,8 +392,8 @@ p {
   right: 0;
   bottom: 0;
   z-index: 0;
- }
- .background-container video {
+}
+.background-container video {
   position: absolute;
   top: 40%;
   left: 50%;

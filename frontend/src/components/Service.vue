@@ -123,7 +123,11 @@
       </el-menu-item>
       <el-menu-item index="5" @click="loadmap">
         <el-icon><CameraFilled /></el-icon>
-        <template #title>路线存储</template>
+        <template #title>截屏保存路线</template>
+      </el-menu-item>
+      <el-menu-item index="6" @click="tfdrawer6">
+        <el-icon><Upload /></el-icon>
+        <template #title>存储路线到geoserver</template>
       </el-menu-item>
     </el-menu>
     <!-- 整体 -->
@@ -477,7 +481,30 @@
         <div class="empty-favorites">暂无推荐地点</div>
       </template>
     </el-drawer>
-  </div>
+    <el-drawer 
+    v-model="drawer6"
+    title="将当前路线存储到geoserver"
+     >
+        <el-form :model="routeform" label-width="auto" style="max-width: 500px">
+          <el-form-item label="工作空间" style="font-weight: 700;">
+            <el-input v-model="routeform.workspace" placeholder="请输入工作空间名称" type="workspace" />
+          </el-form-item>
+          <el-form-item label="存储仓库" style="font-weight: 700;">
+            <el-input v-model="routeform.datasource" placeholder="请输入存储仓库名称" type="datastore" />
+          </el-form-item>
+        </el-form>
+        <div id="createjson">
+          <el-button id="form_geojson" type="primary" @click="myjson=create_json()" style="width:100px"><el-icon><Check/></el-icon>确定</el-button> 
+        </div>
+        <div id="uploadjson">
+          <el-button id="submit_json" type="primary" style="width:150px"   @click="upload_geojson(myjson)" ><el-icon><Upload/></el-icon>上传路线数据</el-button> 
+        </div>
+ 
+        <div id="to_geoserver">
+          <a href="http://localhost:8080/geoserver" target="_blank"><u>前往geoserver查看</u></a>
+        </div>
+</el-drawer>
+</div>
 </template>
 
 <script setup>
@@ -487,7 +514,7 @@ import { ref, computed, onMounted } from "vue";
 import Cesium from "./Cesium.vue";
 import { SwitchLayer } from "../jses/ditu";
 import { useStore } from "vuex";
-import { route } from "../jses/route";
+import { route,routeArray } from "../jses/route";
 import axios from "axios";
 import * as echarts from "echarts";
 import { ElMessage } from "element-plus";
@@ -501,6 +528,7 @@ import {
   Star,
   Opportunity,
   Close,
+  Check,
   Position,
   SwitchButton,
   Switch,
@@ -513,6 +541,7 @@ const drawer2 = ref(false);
 const drawer3 = ref(false);
 const drawer4 = ref(false);
 const drawer5 = ref(false);
+const drawer6 = ref(false);
 const username = computed(() => store.state.username);
 const password = computed(() => store.state.password);
 const isCollapse = ref(false);
@@ -527,6 +556,7 @@ const userscore = ref(0);
 const averagescore = ref(0);
 const userrmk = ref();
 const name = ref();
+const myjson = ref();
 const introduction = ref();
 const city = ref();
 const scenery = ref();
@@ -538,7 +568,6 @@ const closestSpots = ref([]);
 const chartContainer = ref(null);
 const chartVisible = ref(false);
 const cityname = ref();
-const theroute = ref();
 
 const cityData = {
   杭州市: { "5A": 3, "4A": 20, "3A": 71 },
@@ -558,6 +587,12 @@ const form = ref({
   newPassword: "",
   confirmnewPassword: "",
 });
+
+const routeform = ref({
+  workspace:'',
+  datasource:'',
+  layer:''
+})
 const handleSubmit = async () => {
   if (form.value.newPassword !== form.value.confirmNewPassword) {
     ElMessage.error("新密码和确认密码不匹配，请重新输入");
@@ -565,7 +600,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post("http://localhost:5000/change_password", {
+    const response = await axios.post("http://localhost:5000/user/change_password", {
       user_name: store.state.username,
       old_password: form.value.oldPassword,
       new_password: form.value.newPassword,
@@ -617,7 +652,9 @@ const tfdrawer4 = () => {
     ElMessage.error("请输入景区名称");
   }
 };
-
+const tfdrawer6 = () => {
+  drawer6.value=true;
+};
 const fetchFavorites = async () => {
   try {
     const response = await axios.get(
@@ -795,6 +832,51 @@ const search_closest_spots = async (searchName) => {
 const deletejw = () => {
   store.commit("clearUser");
 };
+
+//发送geojson到后端
+const upload_geojson = async (data) => {
+  axios.post('http://127.0.0.1:5000/geoserver/upload-geojson', data, {
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  })
+  .then(response => {
+      console.log('Success:', response.data);
+      alert("路线上传成功！")
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      alert("路线上传失败！同一个工作空间中不能有相同存储仓库名！")
+  });
+}
+            
+const create_json = () =>{
+  return {
+    "workspace": routeform.value.workspace,
+    "datastore": routeform.value.datasource,
+    "layer_name": routeform.value.layer,
+    "geojson_data": create_geojson(routeArray)
+  };
+};
+
+const create_geojson = (coords) => {
+  return {
+      type: "FeatureCollection",
+      features: [
+          {
+              type: "Feature",
+              geometry: {
+                  type: "LineString",
+                  coordinates: coords
+              },
+              properties: {
+                  name: "Sample LineString"
+              }
+          }
+      ]
+  };
+};
+
 
 const tfecharts = (n) => {
   if (n == 2 && cityname.value == undefined) {
@@ -1023,5 +1105,26 @@ body {
 
 .drawer5-item:hover {
   background-color: skyblue; /* 更改为你想要的悬浮背景颜色 */
+}
+#createjson{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#uploadjson{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 240px;
+}
+
+#to_geoserver{
+  position: absolute;
+  left: 75%;
+  transform: translateX(-50%);
+  top: 340px;
+  color: gray;
+  font-size: 14px;
 }
 </style>

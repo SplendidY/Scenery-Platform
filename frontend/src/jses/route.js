@@ -6,6 +6,7 @@ import store from './store';
 let previousRouteEntity = null;
 let startPointEntity = null;
 let endPointEntity = null;
+let routeArray = null;
 //路径规划函数
 async function route() {
   const viewer = getViewer();
@@ -35,7 +36,7 @@ async function route() {
 async function drawRoute(startLng, startLat, endLng, endLat) {
   const viewer = getViewer();
   const routeCoordinates = await getAMapDrivingRoute(startLng, startLat, endLng, endLat);
-
+  routeArray = routeCoordinates;
   const positions = routeCoordinates.map((coord) => {
     const wgsCoord = CoordTransform.GCJ02ToWGS84(coord[0], coord[1]);
     return Cesium.Cartesian3.fromDegrees(wgsCoord[0], wgsCoord[1]);
@@ -129,4 +130,5 @@ async function getAMapDrivingRoute(startLng, startLat, endLng, endLat) {
 
 export {
   route,
+  routeArray
 }

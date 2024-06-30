@@ -11,22 +11,22 @@ async function route() {
   const viewer = getViewer();
   const endj = store.state.endj;
   const endw = store.state.endw;
-  try{
+  try {
     const position = await getCurrentPosition();
-    try{
+    try {
       await drawRoute(position.longitude, position.latitude, endj, endw);
-    }catch(error){
+    } catch (error) {
       console.error('路线失败:', error.message);
     }
-  } catch(error){
+  } catch (error) {
     alert('获取定位失败，将从默认位置开始导航')
     const position = {
-      longitude:'120',
-      latitude:'30'
+      longitude: '120',
+      latitude: '30'
     }
-    try{
+    try {
       await drawRoute(position.longitude, position.latitude, endj, endw);
-    }catch (error) {
+    } catch (error) {
       console.error('路线失败:', error.message);
     }
   }
@@ -56,37 +56,37 @@ async function drawRoute(startLng, startLat, endLng, endLat) {
       width: 10,
       material: new Cesium.PolylineGlowMaterialProperty({
         glowPower: 0.4,
-        color: Cesium.Color.GREEN,
+        color: Cesium.Color.PURPLE,
       }),
     },
   });
-   // 添加起点实体
-   const startCartesian = positions[0];
-   startPointEntity = viewer.entities.add({
-     position: startCartesian,
-     point: {
-       pixelSize: 10,
-       color: Cesium.Color.RED,
-       outlineColor: Cesium.Color.WHITE,
-       outlineWidth: 2,
-     },
-   });
-   // 添加终点实体
-   const endCartesian = positions[positions.length - 1];
-   endPointEntity = viewer.entities.add({
-     position: endCartesian,
-     point: {
-       pixelSize: 10,
-       color: Cesium.Color.BLUE,
-       outlineColor: Cesium.Color.WHITE,
-       outlineWidth: 2,
-     },
-   });
+  // 添加起点实体
+  const startCartesian = positions[0];
+  startPointEntity = viewer.entities.add({
+    position: startCartesian,
+    point: {
+      pixelSize: 10,
+      color: Cesium.Color.RED,
+      outlineColor: Cesium.Color.WHITE,
+      outlineWidth: 2,
+    },
+  });
+  // 添加终点实体
+  const endCartesian = positions[positions.length - 1];
+  endPointEntity = viewer.entities.add({
+    position: endCartesian,
+    point: {
+      pixelSize: 10,
+      color: Cesium.Color.BLUE,
+      outlineColor: Cesium.Color.WHITE,
+      outlineWidth: 2,
+    },
+  });
   const boundingSphere = Cesium.BoundingSphere.fromPoints(positions);
 
   viewer.camera.flyToBoundingSphere(boundingSphere, {
     duration: 2,
-    offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90), (boundingSphere.radius)*5)
+    offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90), (boundingSphere.radius) * 5)
   });
 }
 

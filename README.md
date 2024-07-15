@@ -1,3 +1,10 @@
+终于结束啦    
+  
+  
+  
+  
+
+  
 git下载与一些配置：https://blog.csdn.net/m0_46278037/article/details/118815158  
 vue3学习：https://cn.vuejs.org/guide/introduction.html  
 vue目录文件解释：https://blog.csdn.net/Jo_liver/article/details/135392995 很多应该用不到  

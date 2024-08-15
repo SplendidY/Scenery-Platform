@@ -111,7 +111,7 @@ const toggleSignUp = () => {
 const handleSubmitSignUp = async () => {
   if (isUsernameValid.value && isPasswordValid.value) {
     try {
-      const response = await fetch("http://127.0.0.1:5000/user/register", {
+      const response = await fetch("http://www.splendidyyy.top/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,7 +139,7 @@ const handleSubmitSignUp = async () => {
 
 const handleSubmitSignIn = async () => {
   try {
-    const response = await fetch("http://127.0.0.1:5000/user/login", {
+    const response = await fetch("http://www.splendidyyy.top/user/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

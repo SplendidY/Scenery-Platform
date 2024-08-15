@@ -54,8 +54,8 @@ async function init() {
     setHomeView(position.longitude, position.latitude);
   } catch (error) {
     console.error('定位失败:', error.message);
-    setView(120, 30);
-    setHomeView(120, 30);
+    setView(120.08083, 30.302959);
+    setHomeView(120.08083, 30.302959);
   }
   finally {
     loading.close();

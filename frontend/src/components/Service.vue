@@ -520,7 +520,7 @@ const dialogVisible = ref(false);
 const dialogVisible1 = ref(false);
 const userinfo = ref(false);
 const locations = ref([]);
-const jsonUrl = new URL("../resources/data2.json", import.meta.url).href;
+const jsonUrl = new URL("../../public/data2.json", import.meta.url).href;
 const filteredLocations = ref([]);
 const isFocused = ref(false);
 const userscore = ref(0);
@@ -565,7 +565,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post("http://localhost:5001/change_password", {
+    const response = await axios.post("http://localhost:5000/change_password", {
       user_name: store.state.username,
       old_password: form.value.oldPassword,
       new_password: form.value.newPassword,
@@ -621,7 +621,7 @@ const tfdrawer4 = () => {
 const fetchFavorites = async () => {
   try {
     const response = await axios.get(
-      "http://127.0.0.1:5000/user/get_favorites",
+      "http://www.splendidyyy.top/user/get_favorites",
       {
         params: { username: username.value },
       }
@@ -638,7 +638,7 @@ const fetchFavorites = async () => {
 const addFavorite = async (spotName) => {
   try {
     const response = await axios.post(
-      "http://127.0.0.1:5000/user/add_favorite",
+      "http://www.splendidyyy.top/user/add_favorite",
       {
         username: store.state.username,
         spotname: spotName,
@@ -658,7 +658,7 @@ const removeFavorite = async (index) => {
   try {
     const spotName = favor.value[index];
     const response = await axios.post(
-      "http://127.0.0.1:5000/user/remove_favorite",
+      "http://www.splendidyyy.top/user/remove_favorite",
       {
         username: store.state.username,
         spotname: spotName,
@@ -746,7 +746,7 @@ const submitComment = async () => {
 
       // 发送更新后的数据到后端
       const response = await axios.post(
-        "http://127.0.0.1:5000/recommend/update_location",
+        "http://www.splendidyyy.top/recommend/update_location",
         locations.value,
         {
           headers: {
@@ -774,7 +774,7 @@ const submitComment = async () => {
 const search_closest_spots = async (searchName) => {
   try {
     const response = await fetch(
-      "http://127.0.0.1:5000/recommend/search_closest_spots",
+      "http://www.splendidyyy.top/recommend/search_closest_spots",
       {
         method: "POST",
         headers: {

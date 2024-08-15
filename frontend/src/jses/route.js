@@ -2,6 +2,7 @@ import { getCurrentPosition } from './location';
 import CoordTransform from './CoordTransform';
 import { getViewer } from './init';
 import store from './store';
+import { ElMessage } from "element-plus";
 
 let previousRouteEntity = null;
 let startPointEntity = null;
@@ -19,10 +20,10 @@ async function route() {
       console.error('路线失败:', error.message);
     }
   } catch (error) {
-    alert('获取定位失败，将从默认位置开始导航')
+    ElMessage.error('获取定位失败，将从默认位置(浙江大学紫金港校区)开始导航')
     const position = {
-      longitude: '120',
-      latitude: '30'
+      longitude: '120.08083',
+      latitude: '30.302959'
     }
     try {
       await drawRoute(position.longitude, position.latitude, endj, endw);

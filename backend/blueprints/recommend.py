@@ -7,7 +7,7 @@ import heapq
 
 recommend = Blueprint('recommend', __name__)
 
-json_file_path = '../frontend/src/resources/data2.json'
+json_file_path = '../../frontend/public/data2.json'
 
 # 景点推荐功能
 # 函数：计算曼哈顿距离

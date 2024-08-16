@@ -103,7 +103,7 @@ def change_password():
     user = User.query.filter_by(username=username).first()
     if user:
         if not user.check_password(old_password):
-            return jsonify({"error": "Old password is incorrect"}), 401
+            return jsonify({"error": "Old password is incorrect"+old_password}), 401
     if new_password != confirm_new_password:
         return jsonify({"error": "New passwords do not match"}), 422
     

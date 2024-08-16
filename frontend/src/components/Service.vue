@@ -266,7 +266,7 @@
           >修改密码</el-button
         >
         <el-dialog
-          title="修改密码"
+          title="&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp修改密码"
           v-model="dialogVisible1"
           width="30%"
           :center="true"
@@ -295,7 +295,7 @@
             </el-form-item>
           </el-form>
           <div class="dialog-footer">
-            <el-button type="primary" @click="handleSubmit">保存</el-button>
+            <el-button type="primary" @click="handleSubmit" style="position: relative;left:44%;">保存</el-button>
           </div>
         </el-dialog>
       </div>
@@ -565,13 +565,12 @@ const handleSubmit = async () => {
   }
 
   try {
-    const response = await axios.post("http://localhost:5000/change_password", {
+    const response = await axios.post("http://splendidyyy.top/user/change_password", {
       user_name: store.state.username,
       old_password: form.value.oldPassword,
       new_password: form.value.newPassword,
       confirm_new_password: form.value.confirmNewPassword,
     });
-
     const result = response.data;
     if (response.status === 200) {
       ElMessage.success("密码修改成功");
